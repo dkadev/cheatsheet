@@ -32,7 +32,7 @@ The [Windows client authentication process](https://docs.microsoft.com/en-us/win
 The security subsystem keeps track of the security policies and accounts that reside on a computer system. In the case of a Domain Controller, these policies and accounts apply to the domain where the Domain Controller is located. These policies and accounts are stored in Active Directory. In addition, the LSA subsystem provides services for checking access to objects, checking user permissions, and generating monitoring messages.
 
 #### Windows Authentication Process Diagram
-![[Passwords Attacks Windows Authentication Process Diagram.png]]
+![Passwords Attacks Windows Authentication Process Diagram](../_attachments/Passwords%20Attacks%20Windows%20Authentication%20Process%20Diagram.png)
 
 Local interactive logon is performed by the interaction between the logon process ([WinLogon](https://www.microsoftpressstore.com/articles/article.aspx?p=2228450&seqNum=8)), the logon user interface process (`LogonUI`), the `credential providers`, `LSASS`, one or more `authentication packages`, and `SAM` or `Active Directory`. Authentication packages, in this case, are the Dynamic-Link Libraries (`DLLs`) that perform authentication checks. For example, for non-domain joined and interactive logins, the authentication package `Msv1_0.dll` is used.
 
@@ -68,7 +68,7 @@ The [Security Account Manager](https://docs.microsoft.com/en-us/previous-version
 Windows systems can be assigned to either a workgroup or domain during setup. If the system has been assigned to a workgroup, it handles the SAM database locally and stores all existing users locally in this database. However, if the system has been joined to a domain, the Domain Controller (`DC`) must validate the credentials from the Active Directory database (`ntds.dit`), which is stored in `%SystemRoot%\ntds.dit`.
 
 #### Credential Manager
-![[Passwords Attacks Credential Manager.png]]
+![Credential Manager](../_attachments/Passwords%20Attacks%20Credential%20Manager.png)
 
 Credential Manager is a feature built-in to all Windows operating systems that allows users to save the credentials they use to access various network resources and websites. Saved credentials are stored based on user profiles in each user's `Credential Locker`. Credentials are encrypted and stored at the following location:
 
@@ -173,7 +173,7 @@ hashcat -m 1000 hashestocrack.txt /usr/share/wordlists/rockyou.txt
 
 In addition to getting copies of the SAM database to dump and crack hashes, we will also benefit from targeting LSASS. As discussed in the `Credential Storage` section of this module, LSASS is a critical service that plays a central role in credential management and the authentication processes in all Windows operating systems.
 
-![[Passwords Attacks LSASS Diagram.png]]
+![LSASS Diagram](../_attachments/Passwords%20Attacks%20LSASS%20Diagram.png)
 
 Upon initial logon, LSASS will:
 
@@ -210,7 +210,7 @@ pypykatz lsa minidump /home/peter/Documents/lsass.dmp
 ```
 
 ### Attacking Active Directory & NTDS.dit
-![[Passwords Attacks Domain joined auth proces.png]]
+![Domain joined auth proces](../_attachments/Passwords%20Attacks%20Domain%20joined%20auth%20proces.png)
 
 We can manually create our list(s) or use an `automated list generator` such as the Ruby-based tool [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) to convert a list of real names into common username formats.
 

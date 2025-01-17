@@ -1,7 +1,7 @@
 # SSH
 ## Local relay
 
-![[Pivoting, Tunneling, and Port Forwarding SSH Local port forwarding.png]]
+![SSH Local port forwarding](_attachments/Pivoting%2C%20Tunneling%2C%20and%20Port%20Forwarding%20SSH%20Local%20port%20forwarding.png)
 
 Executing the Local Port Forward
 ```shell
@@ -15,7 +15,7 @@ ssh -L 1234:localhost:3306 -L 8080:localhost:80 ubuntu@10.129.202.64
 
 ##  Dynamic Port Forwarding and SOCKS Tunneling
 
-![[Pivoting, Tunneling, and Port Forwarding SSH tunneling over SOCKS proxy.png]]
+![SSH tunneling over SOCKS proxy](_attachments/Pivoting,%20Tunneling,%20and%20Port%20Forwarding%20SSH%20tunneling%20over%20SOCKS%20proxy.png)
 
 Enabling Dynamic Port Forwarding with SSH
 ```shell
@@ -34,7 +34,7 @@ proxychains nmap -v -Pn -sT 172.16.5.19
 
 ## Remote/Reverse Port Forwarding
 
-![[Pivoting, Tunneling, and Port Forwarding Reverse shell over Reverse SSH Port Forwarding.png]]
+![Reverse shell over Reverse SSH Port Forwarding](_attachments/Pivoting,%20Tunneling,%20and%20Port%20Forwarding%20Reverse%20shell%20over%20Reverse%20SSH%20Port%20Forwarding.png)
 
 ```shell
 ssh -R <InternalIPofPivotHost>:8080:0.0.0.0:8000 ubuntu@<ipAddressofTarget> -vN
