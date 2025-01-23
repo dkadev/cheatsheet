@@ -1,40 +1,40 @@
 ## Host Discovery
 
-Ping sweep Nmap
+### Ping sweep Nmap
 
 ```shell
-sudo nmap 10.129.2.18 -sn -oA host -PE --reason 
+sudo nmap 10.129.2.0/24 -sn -oA hosts -PE --reason 
 ```
 
 | **Scanning Options** | **Description**                                                          |
 | -------------------- | ------------------------------------------------------------------------ |
-| `10.129.2.18`        | Performs defined scans against the target.                               |
+| `10.129.2.0/24`      | Performs defined scans against the target.                               |
 | `-sn`                | Disables port scanning.                                                  |
-| `-oA host`           | Stores the results in all formats starting with the name 'host'.         |
+| `-oA hosts`          | Stores the results in all formats starting with the name 'hosts'.        |
 | `-PE`                | Performs the ping scan by using 'ICMP Echo requests' against the target. |
 | `--reason`           | Displays the reason for specific result.                                 |
 
-Ping sweep Metasploit
+### Ping sweep Metasploit
 ```
 post/multi/gather/ping_sweep
 ```
 
-Ping sweep BASH
+### Ping sweep BASH
 ```shell
 for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
 ```
 
-Ping sweep CMD
+### Ping sweep CMD
 ```shell
 for /L %i in (1 1 254) do ping 172.16.5.%i -n 1 -w 100 | find "Reply"
 ```
 
-Ping sweep Powershell
+### Ping sweep Powershell
 ```powershell
 1..254 | % {"172.16.5.$($_): $(Test-Connection -count 1 -comp 172.15.5.$($_) -quiet)"}
 ```
 
-Wireshark
+### Wireshark
 
 ```shell
 sudo -E wireshark
@@ -42,22 +42,28 @@ sudo -E wireshark
 
 If we are on a host without a GUI (which is typical), we can use [tcpdump](https://linux.die.net/man/8/tcpdump), [net-creds](https://github.com/DanMcInerney/net-creds), and [NetMiner](https://www.netminer.com/en/product/netminer.php), etc., to perform the same functions. We can also use tcpdump to save a capture to a .pcap file, transfer it to another host, and open it in Wireshark.
 
-tcpdump
+### tcpdump
 
 ```shell
 sudo tcpdump -i ens224 
 ```
 
-Netdiscover
+### Netdiscover
 
 ```shell
 sudo netdiscover -i <INTERFACE> -r <IP_RANGE>
 ```
 
-dnsrecon
+### dnsrecon
 
 ```shell
 dnsrecon -d INLANEFREIGHT.LOCAL
+```
+
+### NetExec
+
+```shell
+nxc smb 10.10.14.0/24
 ```
 
 ## Host and Port Scanning
@@ -65,7 +71,13 @@ dnsrecon -d INLANEFREIGHT.LOCAL
 > [!tip]
 > Always scan TCP and UDP
 
- Fast open TCP port scan
+First quick top 1000 ports scan of scope
+
+```shell
+sudo nmap --open -oA inlanefreight_ept_tcp_1k -iL scope 
+```
+
+Very fast all TCP port SYN scan (for CTF)
 
 ```shell
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn -oG nmap <IP> 
@@ -79,12 +91,52 @@ sudo nmap -p- --open -sU -vvv <IP>
 
 ## Service enumeration
 
- Deeper scan with scripts and service versions
+ Deeper scan with scripts and service versions to targeted ports
 
 ```shell
-nmap -sCV -p <PORTS> -Pn -vvv -oN nmap_target <IP>
+sudo nmap -sCV -p <PORTS> -Pn -vvv -oN nmap_target <IP>
 ```
 
+More agressive scan of all ports
+
+```shell
+sudo nmap --open -p- -A -oA inlanefreight_ept_tcp_all_svc -iL scope
+```
+
+## Output
+
+We can use this handy Nmap grep [cheatsheet](https://github.com/leonjza/awesome-nmap-grep) to "cut through the noise" and extract the most useful information from the scan.
+### hosts and open ports
+
+command
+```shell
+NMAP_FILE=output.grep
+
+egrep -v "^#|Status: Up" $NMAP_FILE | cut -d' ' -f2,4- | \
+sed -n -e 's/Ignored.*//p'  | \
+awk '{print "Host: " $1 " Ports: " NF-1; $1=""; for(i=2; i<=NF; i++) { a=a" "$i; }; split(a,s,","); for(e in s) { split(s[e],v,"/"); printf "%-8s %s/%-7s %s\n" , v[2], v[3], v[1], v[5]}; a="" }'
+```
+
+output
+```shell
+Host: 127.0.0.1 Ports: 16
+open     tcp/22    ssh
+open     tcp/53    domain
+open     tcp/80    http
+open     tcp/443   https
+open     tcp/631   ipp
+open     tcp/3306  mysql
+open     tcp/4767  unknown
+open     tcp/6379
+open     tcp/8080  http-proxy
+open     tcp/8081  blackice-icecap
+open     tcp/9000  cslistener
+open     tcp/9001  tor-orport
+open     tcp/49152 unknown
+open     tcp/49153 unknown
+filtered tcp/54695
+filtered tcp/58369
+```
 ## NSE (Nmap Scripting Engine)
 Default Scripts
 
@@ -109,7 +161,7 @@ sudo nmap <target> --script <script-name>,<script-name>,...
 Nmap - Vuln Category
 
 ```shell
-fango@htb[/htb]$ sudo nmap 10.129.2.28 -p 80 -sV --script vuln 
+sudo nmap 10.129.2.28 -p 80 -sV --script vuln 
 
 Nmap scan report for 10.129.2.28
 Host is up (0.036s latency).
