@@ -32,6 +32,11 @@ nmap -Pn -v -n -p80 -b anonymous:password@10.10.110.213 172.17.0.2
 sudo nmap 10.129.14.128 -sV -sC -p139,445
 ```
 
+Look for extended attributes
+
+```
+allinfo "file.txt"
+```
 ### smbclient
 
 ```shell
@@ -73,7 +78,19 @@ We can use this [cheat sheet from the SANS Institute](https://www.willhackforsus
 enum4linux-ng.py 10.10.11.45 -A -C
 ```
 
-smbclient-ng
+### smbclient-ng
+
+```shell
+smbclientng --host 10.10.10.178 -d 'HTB-NEST' -u 'TempUser' -p 'welcome2019'
+```
+
+### Mount shares
+
+```shell
+sudo mount -t cifs -o 'username=TempUser,password=welcome2019' //10.10.10.178/Users /mnt/shares/users
+```
+
+
 ### Protocol Specifics Attacks
 
 #### Brute Forcing and Password Spray
@@ -251,8 +268,12 @@ show databases;
 - `resource` - a read-only database that keeps system objects visible in every database on the server in sys schema.
 - `tempdb` - keeps temporary objects for SQL queries.
 
-```shell
+```sql
 SELECT name FROM master.dbo.sysdatabases
+```
+
+```sql
+SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'
 ```
 ### Execute Commands
 
@@ -604,7 +625,7 @@ From a local network perspective, an attacker can also perform DNS Cache Poisoni
 To exploit the DNS cache poisoning via `Ettercap`, we should first edit the `/etc/ettercap/etter.dns` file to map the target domain name (e.g., `inlanefreight.com`) that they want to spoof and the attacker's IP address (e.g., `192.168.225.110`) that they want to redirect a user to:
 
 ```shell
-fango@htb[/htb]# cat /etc/ettercap/etter.dns
+cat /etc/ettercap/etter.dns
 
 inlanefreight.com      A   192.168.225.110
 *.inlanefreight.com    A   192.168.225.110
