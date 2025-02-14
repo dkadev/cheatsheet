@@ -14,7 +14,7 @@
     "margin": "0",
     "downscalePercent": 100
   },
-  "showUnsupportedFiles": true,
-  "showInlineTitle": false,
+  "showUnsupportedFiles": false,
+  "showInlineTitle": true,
   "useMarkdownLinks": true
 }

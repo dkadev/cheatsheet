@@ -350,8 +350,8 @@
         "gradientHighlights": false,
         "gradientHighlightsColourStop": "70%",
         "languageBorderColour": true,
-        "languageBorderWidth": 5,
-        "iconSize": 20
+        "languageBorderWidth": 1,
+        "iconSize": 14
       }
     },
     "colours": {
@@ -422,7 +422,7 @@
             "displayVersionColour": "#FF00FF",
             "displayTimestampColour": "#808080"
           },
-          "lineColour": "--color-base-30"
+          "lineColour": "#5D6370"
         },
         "highlights": {
           "activeCodeblockLineColour": "--color-base-30",
