@@ -6,13 +6,10 @@
 sudo nmap 10.129.2.0/24 -sn -oA hosts -PE --reason 
 ```
 
-| **Scanning Options** | **Description**                                                          |
-| -------------------- | ------------------------------------------------------------------------ |
-| `10.129.2.0/24`      | Performs defined scans against the target.                               |
-| `-sn`                | Disables port scanning.                                                  |
-| `-oA hosts`          | Stores the results in all formats starting with the name 'hosts'.        |
-| `-PE`                | Performs the ping scan by using 'ICMP Echo requests' against the target. |
-| `--reason`           | Displays the reason for specific result.                                 |
+| `-sn`       | Disables port scanning.                                                  |
+| ----------- | ------------------------------------------------------------------------ |
+| `-PE`       | Performs the ping scan by using 'ICMP Echo requests' against the target. |
+| `--reason`  | Displays the reason for specific result.                                 |
 
 ### Ping sweep Metasploit
 ```

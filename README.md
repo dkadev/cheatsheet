@@ -4,4 +4,4 @@ Welcome to my personal Cheatsheet repository! This is where I keep all my hackin
 
 This is also an Obsidian vault, so you can use the Obsidian app to view and navigate the notes.
 
-![Obsidian Preview](_attachments/screenshot_obsidian.png)
+![Obsidian Preview](cheatsheet/_attachments/screenshot_obsidian.png)
