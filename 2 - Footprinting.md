@@ -79,16 +79,22 @@ samrdump.py <target_IP>
 ```shell
 smbmap -H <target_IP>
 ```
+
  NetExec(CrackMapExec)
 ```shell
 nxc smb <target_IP> --shares -u '' -p ''
 ```
- Enum4Linux-ng - Enumeration
+
+ enum4linux-ng
 ```shell
 ./enum4linux-ng.py <target_IP> -A
 ```
 
 smbclient-ng
+```shell
+smbclientng --host 10.10.11.152 -d 'timelapse.htb' -u 'dsfwf' -p ''
+```
+
 ## 111,2049 - NFS
  Footprinting the Service
 ```shell
@@ -101,10 +107,10 @@ showmount -e 10.129.14.128
 ```
  Mounting NFS Share
 ```shell
-fango@htb[/htb]$ mkdir target-NFS
-fango@htb[/htb]$ sudo mount -t nfs 10.129.14.128:/ ./target-NFS/ -o nolock
-fango@htb[/htb]$ cd target-NFS
-fango@htb[/htb]$ tree .
+mkdir target-NFS
+sudo mount -t nfs 10.129.14.128:/ ./target-NFS/ -o nolock
+cd target-NFS
+tree .
 
 .
 └── mnt
@@ -120,7 +126,7 @@ Squash
 
 List Contents with Usernames & Group Names
 ```shell
-fango@htb[/htb]$ ls -l mnt/nfs/
+ls -l mnt/nfs/
 
 total 16
 -rw-r--r-- 1 cry0l1t3 cry0l1t3 1872 Sep 25 00:55 cry0l1t3.priv
@@ -132,7 +138,7 @@ total 16
 
 List Contents with UIDs & GUIDs
 ```shell
-fango@htb[/htb]$ ls -n mnt/nfs/
+ls -n mnt/nfs/
 
 total 16
 -rw-r--r-- 1 1000 1000 1872 Sep 25 00:55 cry0l1t3.priv
@@ -147,8 +153,8 @@ It is important to note that if the `root_squash` option is set, we cannot edit 
 
 Unmounting
 ```shell
-fango@htb[/htb]$ cd ..
-fango@htb[/htb]$ sudo umount ./target-NFS
+cd ..
+sudo umount ./target-NFS
 ```
 ## 53 - DNS
 https://academy.hackthebox.com/module/112/section/1069

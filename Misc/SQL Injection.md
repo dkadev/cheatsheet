@@ -3,7 +3,8 @@
 SQLMap is the only penetration testing tool that can properly detect and exploit all known SQLi types. We see the types of SQL injections supported by SQLMap with the `sqlmap -hh` command:
 
 ```shell
-fango@htb[/htb]$ sqlmap -hh
+sqlmap -hh
+
 ...SNIP...
   Techniques:
     --technique=TECH..  SQL injection techniques to use (default "BEUSTQ")
