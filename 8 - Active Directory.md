@@ -319,6 +319,9 @@ mitm6 -i eth0 -d juggernaut.local
 ntlmrelayx.py -6 -t ldaps://172.16.1.5 -smb2support -wh fakewpad.juggernaut.local -l gimmedaloot
 ```
 
+https://github.com/RedTeamPentesting/pretender
+
+https://blog.redteam-pentesting.de/2022/introducing-pretender/
 # Password Spraying
 
 ## Password Policies
@@ -459,6 +462,16 @@ PS C:\htb> Get-LAPSComputers
 ```
 
 # Credentialed Enumeration - from Linux
+
+## LDAPDomainDump
+
+```shell
+usage: ldapdomaindump.py [-h] [-u USERNAME] [-p PASSWORD] [-at {NTLM,SIMPLE}]
+                         [-o DIRECTORY] [--no-html] [--no-json] [--no-grep]
+                         [--grouped-json] [-d DELIMITER] [-r] [-n DNS_SERVER]
+                         [-m]
+                         HOSTNAME
+```
 
 ## NetExec (CrackMapExec)
 
@@ -1165,12 +1178,7 @@ SQL> enable_xp_cmdshell
 
 ## Zerologon
 
-```embed
-title: "Zerologon (CVE-2020-1472): Overview, Exploit Steps and Prevention"
-image: "https://www.crowdstrike.com/content/dam/crowdstrike/www/en-us/wp/2020/12/Blog_1060x698-8-1.jpg"
-description: "Learn everything you need to know about the Microsoft exploit Zerologon, what we believe is the most critical Active Directory vulnerability discovered this year."
-url: "https://www.crowdstrike.com/en-us/blog/cve-2020-1472-zerologon-security-advisory/"
-```
+https://www.crowdstrike.com/en-us/blog/cve-2020-1472-zerologon-security-advisory/
 
 Test https://github.com/SecuraBV/CVE-2020-1472
 
@@ -1178,12 +1186,7 @@ Exploit https://github.com/dirkjanm/CVE-2020-1472
 
 ## DCShadow
 
-```embed
-title: "What a DCShadow Attack Is and How to Defend Against It"
-image: "https://cdn-blog.netwrix.com/wp-content/uploads/2023/04/Cybersecurity_Cyber-Attack.jpg"
-description: "Learn how a DCShadow attack unfolds and how Netwrix solutions can help you detect them promptly and respond effectively."
-url: "https://blog.netwrix.com/2022/09/28/dcshadow_attack/"
-```
+https://blog.netwrix.com/2022/09/28/dcshadow_attack/
 
 ## NoPac (SamAccountName Spoofing)
 
