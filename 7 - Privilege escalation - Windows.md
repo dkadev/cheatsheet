@@ -112,19 +112,8 @@ Suppose we are unable to load tools on the target for whatever reason but have R
 
 ## Remote Code Execution as SYSTEM
 
-```embed
-title: "GitHub - decoder-it/psgetsystem: getsystem via parent process using ps1 & embeded c#"
-image: "https://opengraph.githubassets.com/3ab3c8a61a4fefb8f5a0ec50d80c762cc413a58d36225abef5ffe575c059f73a/decoder-it/psgetsystem"
-description: "getsystem via parent process using ps1 & embeded c# - decoder-it/psgetsystem"
-url: "https://github.com/decoder-it/psgetsystem"
-```
-
-```embed
-title: "PrivFu/PrivilegedOperations/SeDebugPrivilegePoC at main · daem0nc0re/PrivFu"
-image: "https://opengraph.githubassets.com/87935b3f26d713d31d02c15151d94dcc93d330f4026a0a591bb36966d09af47e/daem0nc0re/PrivFu"
-description: "Kernel mode WinDbg extension and PoCs for token privilege investigation. - daem0nc0re/PrivFu"
-url: "https://github.com/daem0nc0re/PrivFu/tree/main/PrivilegedOperations/SeDebugPrivilegePoC"
-```
+https://github.com/decoder-it/psgetsystem
+https://github.com/daem0nc0re/PrivFu/tree/main/PrivilegedOperations/SeDebugPrivilegePoC
 
 # SeTakeOwnershipPrivilege
 
@@ -1071,7 +1060,7 @@ Get-ChildItem C:\ -Recurse -Include *.rdp, *.config, *.vnc, *.cred -ErrorAction 
 
 - **Using `strings` Command**:
   ```shell
-  fango@htb[/htb]$ strings plum.sqlite-wal
+  strings plum.sqlite-wal
   ```
 
 ## Other Files of Interest
