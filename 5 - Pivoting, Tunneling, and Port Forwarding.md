@@ -1,7 +1,6 @@
 # SSH
 ## Local relay
-
-![SSH Local port forwarding](_attachments/Pivoting%2C%20Tunneling%2C%20and%20Port%20Forwarding%20SSH%20Local%20port%20forwarding.png)
+![](Pivoting,%20Tunneling,%20and%20Port%20Forwarding%20SSH%20Local%20port%20forwarding.png)
 
 Executing the Local Port Forward
 ```shell
@@ -284,43 +283,131 @@ Then RDP to internal host.
 
 # Other tools
 
-## Ligolo-ng
-https://github.com/Nicocha30/ligolo-ng
-An advanced, yet simple, tunneling/pivoting tool that uses a TUN interface.
+https://lottunnels.github.io
 
+## Ligolo-ng
 https://www.flu-project.com/2023/10/ligolo-ng.html
+
+Ligolo-ng is a lightweight and fast tool that allows pentesters to establish reverse TCP/TLS tunnels using a virtual "tun" interface, eliminating the need for SOCKS. This enables the use of tools like Nmap without proxychains, enhancing connection performance and stability.
+
+### Preparation
+
+- **Agent**: Victim machine
+- **Proxy**: Attacker machine
+
+Download the necessary binaries from the [official Ligolo-ng repository](https://github.com/nicocha30/ligolo-ng). You can choose between the source code or precompiled binaries.
+
+### Configuration of Ligolo-ng
+
+1. **Virtual Interface**: Set up the "tun" interface to establish the tunnel.
+
+```shell
+sudo ip tuntap add user $(whoami) mode tun ligolo
+sudo ip link set ligolo up
+```
+
+2. **Proxy Options**:
+   - **`-autocert`**: Automatically requests a certificate using Let's Encrypt.
+   - **`-certfile / -keyfile`**: Use your own certificates.
+   - **`-selfcert`**: Generates a self-signed certificate.
+   - **`-tun <interface name>`**: Specify a different interface name.
+   - **`-laddr <IP:port>`**: Change the default listening interface.
+
+### Execution
+
+- **Attacker Machine**: Start the proxy with default settings.
+
+```shell
+./proxy -selfcert
+```
+
+- **Victim Machine**: Run the agent to create the session.
+
+```shell
+./agent -connect 10.10.14.3:11601 -ignore-cert
+```
+
+- Then choose session on proxy
+- 
+```ligolo
+ligolo-ng » session
+```
+### Useful Commands
+
+- **ifconfig**: Check network interfaces on the victim machine.
+
+```ligolo
+ligolo-ng » ifconfig
+```
+
+- **Static Route**: Add a static route to redirect traffic through the Ligolo tunnel.
+
+```shell
+sudo ip r add 172.16.1.0/24 dev ligolo
+```
+
+Then start the tunnel
+```ligolo
+ligolo-ng » start
+```
+
+### Bridge Link
+
+Set up a listener on the victim machine to redirect incoming traffic to the attacker machine.
+
+- Configure listener on the proxy
+
+```ligolo
+listener_add --addr 0.0.0.0:1234 --to 127.0.0.1:4321 --tcp
+```
+
+### Pivoting Between Machines
+
+Create multiple sessions to pivot between machines by setting up listeners at each hop.
+
+- Configure listener on the jump machine
+
+```ligolo
+listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601 --tcp
+```
+
+- Connect 2 victim to the jump machine then it connects to attacker
+
+```shell
+./agent -connect 172.16.1.110:11601 -ignore-cert
+```
 
 ## Wstunnel
 https://github.com/erebe/wstunnel
 
 To set up a tunnel using `wstunnel` to access port 445 on a remote host (172.16.6.50) through a pivot host (10.129.106.93), you can follow these steps. This setup assumes that you have control over the pivot host and can run `wstunnel` on it.
 
-1. **On the Pivot Host (10.129.106.93):**
+8. **On the Pivot Host (10.129.106.93):**
 
    You need to run `wstunnel` in server mode on the pivot host. This will listen for incoming WebSocket connections from your local attack host.
 
-   ```bash
-   wstunnel -s 0.0.0.0:8080
-   ```
+```shell
+wstunnel -s 0.0.0.0:8080
+```
 
    This command starts a WebSocket server on the pivot host listening on port 8080.
 
-2. **On Your Local Attack Host (10.10.15.48):**
+9. **On Your Local Attack Host (10.10.15.48):**
 
    You will run `wstunnel` in client mode to connect to the pivot host and forward traffic to the remote host.
 
-   ```bash
-   wstunnel -t ws://10.129.106.93:8080 -L 1445:172.16.6.50:445
-   ```
+```shell
+wstunnel -t ws://10.129.106.93:8080 -L 1445:172.16.6.50:445
+```
 
    This command does the following:
    - Connects to the WebSocket server on the pivot host at `10.129.106.93:8080`.
    - Forwards local port 1445 on your Kali machine to port 445 on the remote host `172.16.6.50`.
 
-3. **Access the Remote Host:**
+10. **Access the Remote Host:**
 
    Once the tunnel is established, you can access the remote host's SMB service on port 445 by connecting to `localhost:1445` on your Kali machine. For example, you can use `smbclient` or any other tool that interacts with SMB:
 
-   ```bash
-   smbclient -L localhost -p 1445
-   ```
+```shell
+smbclient -L localhost -p 1445
+```
