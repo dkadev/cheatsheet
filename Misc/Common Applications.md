@@ -55,9 +55,9 @@ droopescan scan drupal -u http://drupal.inlanefreight.local
 Over the years, Drupal core has suffered from a few serious remote code execution vulnerabilities, each dubbed `Drupalgeddon`. At the time of writing, there are 3 Drupalgeddon vulnerabilities in existence.
 
 - [CVE-2014-3704](https://www.drupal.org/SA-CORE-2014-005), known as Drupalgeddon, affects versions 7.0 up to 7.31 and was fixed in version 7.32. This was a pre-authenticated SQL injection flaw that could be used to upload a malicious form or create a new admin user.
-    
+
 - [CVE-2018-7600](https://www.drupal.org/sa-core-2018-002), also known as Drupalgeddon2, is a remote code execution vulnerability, which affects versions of Drupal prior to 7.58 and 8.5.1. The vulnerability occurs due to insufficient input sanitization during user registration, allowing system-level commands to be maliciously injected.
-    
+
 - [CVE-2018-7602](https://cvedetails.com/cve/CVE-2018-7602/), also known as Drupalgeddon3, is a remote code execution vulnerability that affects multiple versions of Drupal 7.x and 8.x. This flaw exploits improper validation in the Form API.
 
 **Drupalgeddon**
@@ -199,7 +199,7 @@ Test
 http://localhost:8080/cgi/ism.bat?&dir
 ```
 
-Reverse shell script https://github.com/jaiguptanick/CVE-2019-0232.git
+Reverse shell script <https://github.com/jaiguptanick/CVE-2019-0232.git>
 
 Metasploit `windows/http/tomcat_cgi_cmdlineargs`
 
@@ -217,6 +217,7 @@ apachetomcatscanner -tt target_ip -tp port    --no-check-certificate
 ```
 
 ### Refrences
+
 - [scan for Apache Tomcat](https://github.com/p0dalirius/ApacheTomcatScanner)
 - [Apache Tomcat Example Scripts](https://www.rapid7.com/db/vulnerabilities/apache-tomcat-example-leaks/)
 
@@ -266,8 +267,8 @@ To achieve this, we first need to create a custom Splunk application using the f
 
 ```dirtree
 - splunk_shell/
-	- bin
-	- default
+ - bin
+ - default
 ```
 
 The `bin` directory will contain any scripts that we intend to run (in this case, a PowerShell reverse shell), and the default directory will have our `inputs.conf` file. Our reverse shell will be a PowerShell one-liner.
@@ -335,7 +336,7 @@ If the compromised Splunk host is a deployment server, it will likely be possibl
 
 ## Information Gathering
 
-In this step, penetration testers have to identify the application architecture, the programming languages and frameworks that have been used, and understand how the application and the infrastructure work. They should also need to identify technologies that are used on the client and server sides and find entry points and user inputs. 
+In this step, penetration testers have to identify the application architecture, the programming languages and frameworks that have been used, and understand how the application and the infrastructure work. They should also need to identify technologies that are used on the client and server sides and find entry points and user inputs.
 
 |[CFF Explorer](https://ntcore.com/?page_id=388)|[Detect It Easy](https://github.com/horsicq/Detect-It-Easy)|[Process Monitor](https://learn.microsoft.com/en-us/sysinternals/downloads/procmon)|[Strings](https://learn.microsoft.com/en-us/sysinternals/downloads/strings)|
 
@@ -392,6 +393,7 @@ During a penetration testing enumeration, several ways exist to identify whether
 |`HTTP Headers`|Check the HTTP response headers of the web application. ColdFusion typically sets specific headers, such as "Server: ColdFusion" or "X-Powered-By: ColdFusion", that can help identify the technology being used.|
 |`Error Messages`|If the application uses ColdFusion and there are errors, the error messages may contain references to ColdFusion-specific tags or functions.|
 |`Default Files`|ColdFusion creates several default files during installation, such as "admin.cfm" or "CFIDE/administrator/index.cfm". Finding these files on the web server may indicate that the web application runs on ColdFusion.|
+
 # IIS Tilde Enumeration
 
 **Tilde Enumeration using IIS ShortName Scanner**
@@ -426,6 +428,7 @@ Although LDAP and AD are `related`, they `serve different purposes`. `LDAP` is a
 |An `open and cross-platform protocol` that can be used with different types of directory servers and applications.|`Proprietary software` that only works with Windows-based systems and requires additional components such as DNS (Domain Name System) and Kerberos for its functionality.|
 |It has a `flexible and extensible schema` that allows custom attributes and object classes to be defined by administrators or developers.|It has a `predefined schema` that follows and extends the X.500 standard with additional object classes and attributes specific to Windows environments. Modifications should be made with caution and care.|
 |Supports `multiple authentication mechanisms` such as simple bind, SASL, etc.|It supports `Kerberos` as its primary authentication mechanism but also supports NTLM (NT LAN Manager) and LDAP over SSL/TLS for backward compatibility.|
+
 ## ldapsearch
 
 For example, `ldapsearch` is a command-line utility used to search for information stored in a directory using the LDAP protocol. It is commonly used to query and retrieve data from an LDAP directory service.
@@ -463,5 +466,3 @@ Though the general concepts for application hardening apply to all applications 
 |[PRTG Network Monitor](https://kb.paessler.com/en/topic/61108-what-security-features-does-prtg-include)|Secure authentication|Make sure to stay up-to-date and change the default PRTG password|
 |osTicket|Access controls|Limit access from the internet if possible|
 |[GitLab](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/)|Secure authentication|Enforce sign-up restrictions such as requiring admin approval for new sign-ups, configuring allowed and denied domains|
-
-

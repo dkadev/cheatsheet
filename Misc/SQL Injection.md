@@ -1,3 +1,5 @@
+# SQL Injection
+
 ## SQLMap
 
 SQLMap is the only penetration testing tool that can properly detect and exploit all known SQLi types. We see the types of SQL injections supported by SQLMap with the `sqlmap -hh` command:
@@ -32,11 +34,10 @@ AND 1=1
 SQLMap exploits `Boolean-based blind SQL Injection` vulnerabilities through the differentiation of `TRUE` from `FALSE` query results, effectively retrieving 1 byte of information per request. The differentiation is based on comparing server responses to determine whether the SQL query returned `TRUE` or `FALSE`. This ranges from fuzzy comparisons of raw response content, HTTP codes, page titles, filtered text, and other factors.
 
 - `TRUE` results are generally based on responses having none or marginal difference to the regular server response.
-    
+
 - `FALSE` results are based on responses having substantial differences from the regular server response.
-    
+
 - `Boolean-based blind SQL Injection` is considered as the most common SQLi type in web applications.
-    
 
 ---
 
@@ -89,9 +90,8 @@ AND 1=IF(2>1,SLEEP(5),0)
 The principle of `Time-based blind SQL Injection` is similar to the `Boolean-based blind SQL Injection`, but here the response time is used as the source for the differentiation between `TRUE` or `FALSE`.
 
 - `TRUE` response is generally characterized by the noticeable difference in the response time compared to the regular server response
-    
+
 - `FALSE` response should result in a response time indistinguishable from regular response times
-    
 
 `Time-based blind SQL Injection` is considerably slower than the boolean-based blind SQLi, since queries resulting in `TRUE` would delay the server response. This SQLi type is used in cases where `Boolean-based blind SQL Injection` is not applicable. For example, in case the vulnerable SQL statement is a non-query (e.g. `INSERT`, `UPDATE` or `DELETE`), executed as part of the auxiliary functionality without any effect to the page rendering process, time-based SQLi is used out of the necessity, as `Boolean-based blind SQL Injection` would not really work in this case.
 

@@ -1,36 +1,47 @@
+# Footrpinting services
+
 ## 21 - FTP
 
 Footprinting the Service
+
 ```shell
 sudo nmap -sV -p21 -sC -A <target_IP>
 ```
 
  Anonymous Login
+
 ```shell
 ftp 10.129.14.136
 ```
 
  Recursive Listing
+
 ```shell
 ls -R
 ```
 
  Download a File
+
 ```shell
 get Important\ Notes.txt
 ```
 
  Download All Available Files
+
 ```shell
 wget -m --no-passive ftp://anonymous:anonymous@10.129.14.136
 ```
+
  Upload a File
+
 ```shell
 put testupload.txt 
 ```
 
 ## 445 - SMB
+
  Footprinting the Service
+
 ```shell
 sudo nmap <target_IP> -sV -sC -p139,445
 ```
@@ -46,6 +57,7 @@ smbclient //<target_IP>/notes
 ```
 
  Download Files from SMB
+
 ```shell
 smb: \> get prep-prod.txt 
 
@@ -62,50 +74,62 @@ smb: \> !cat prep-prod.txt
 
 [] check your code with the templates
 [] run code-assessment.py
-[] …	
+[] … 
 ```
 
  RPCclient
+
 ```shell
 rpcclient -U "" <target_IP>
 ```
 
  Impacket - Samrdump.py
+
 ```shell
 samrdump.py <target_IP>
 ```
 
  SMBmap
+
 ```shell
 smbmap -H <target_IP>
 ```
 
  NetExec(CrackMapExec)
+
 ```shell
 nxc smb <target_IP> --shares -u '' -p ''
 ```
 
  enum4linux-ng
+
 ```shell
 ./enum4linux-ng.py <target_IP> -A
 ```
 
 smbclient-ng
+
 ```shell
 smbclientng --host 10.10.11.152 -d 'timelapse.htb' -u 'dsfwf' -p ''
 ```
 
 ## 111,2049 - NFS
+
  Footprinting the Service
+
 ```shell
 sudo nmap <target_IP> -p111,2049 -sV -sC
 sudo nmap --script "nfs*" <target_IP> -sV -p111,2049
 ```
+
  Show Available NFS Shares
+
 ```shell
 showmount -e 10.129.14.128
 ```
+
  Mounting NFS Share
+
 ```shell
 mkdir target-NFS
 sudo mount -t nfs 10.129.14.128:/ ./target-NFS/ -o nolock
@@ -125,6 +149,7 @@ tree .
 Squash
 
 List Contents with Usernames & Group Names
+
 ```shell
 ls -l mnt/nfs/
 
@@ -137,6 +162,7 @@ total 16
 ```
 
 List Contents with UIDs & GUIDs
+
 ```shell
 ls -n mnt/nfs/
 
@@ -152,12 +178,16 @@ total 16
 It is important to note that if the `root_squash` option is set, we cannot edit the `backup.sh` file even as `root`.
 
 Unmounting
+
 ```shell
 cd ..
 sudo umount ./target-NFS
 ```
+
 ## 53 - DNS
-https://academy.hackthebox.com/module/112/section/1069
+
+<https://academy.hackthebox.com/module/112/section/1069>
+
 ```shell
 dnsenum --dnsserver <nameserver> --enum -p 0 -s 0 -o found_subdomains.txt -f WORDLIST <domain.tld>
 ```
@@ -270,7 +300,7 @@ sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-c
 
 Metasploit:
 
-```
+```plain
 scanner/mssql/mssql_ping
 ```
 
@@ -282,14 +312,14 @@ impacket-mssqlclient <USER>@<target_IP> -windows-auth
 
 ## 1521 - Oracle TNS
 
-```
+```plain
 odat.py
 sqlplus
 ```
 
 ## 623 UDP - IPMI
 
-```
+```plain
 msf6 auxiliary(scanner/ipmi/ipmi_version) 
 msf6 auxiliary(scanner/ipmi/ipmi_dumphashes)
 ```
@@ -326,7 +356,7 @@ RDP
 nmap -sV -sC <target_IP> -p3389 --script rdp*
 ```
 
-https://github.com/CiscoCXSecurity/rdp-sec-check
+<https://github.com/CiscoCXSecurity/rdp-sec-check>
 
 ```shell
 xfreerdp /u:<user> /p:"<password>" /v:<FQDN/IP>

