@@ -24,12 +24,22 @@ nikto -h inlanefreight.com -Tuning b
 
 Ffuf
 ```shell
-ffuf -u http://<IP address>/FUZZ -w <WORDLIST>:FUZZ -ac
+ffuf -w <WORDLIST>:FUZZ -ic -v -u http://<IP address>/FUZZ -ac -recursion
 ```
+
+- `-ic`: Ignores commented lines in wordlist when fuzzing.
+- `-v`: Verbose output, printing full URL and redirect location (if any) with the results.
+- `-ac`: Automatically calibrates the response filtering, which helps in identifying false positives.
+- `-recursion`: Enables recursive fuzzing, meaning that if a directory is found, `ffuf` will continue to fuzz within that directory.
 
 Gobuster
 ```shell
 gobuster dir -u <URL> -w <WORDLIST>
+```
+
+Feroxbuster
+```shell
+feroxbuster --url http://10.13.38.11/ -w ../wordlist.txt
 ```
 
 Wordlists
