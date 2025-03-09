@@ -5,22 +5,22 @@ tags:
   - hard
 Date: 
 URL: 
-OS:
+OS: 
+IP: 
+Description:
 ---
-# IP
+## Enumeration
 
-```
-
-```
-# Nmap
+### Nmap Scan
 
 ```shell
 
 ```
 
-# Foothold
+## Initial Foothold
 
-# User
+## Lateral Movement
 
-# Root
+## Privilege Escalation
+
 
