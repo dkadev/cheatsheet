@@ -86,6 +86,12 @@ UDP port scan
 sudo nmap -p- --open -sU -vvv <IP>
 ```
 
+If IPv6 known, add `-6`to also scan. There may be not firewalled ports:
+
+```shell
+sudo nmap -6 -p- --open -vvv -n -Pn -oG nmap6 dead:beef::1001
+```
+
 ## Service enumeration
 
  Deeper scan with scripts and service versions to targeted ports
